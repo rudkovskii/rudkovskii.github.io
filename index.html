@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дима Рудковский — AI-тренер и консультант</title>
+<meta name="description" content="Нахожу в команде 2–3 процесса, где ИИ даёт измеримый эффект, и выращиваю людей, которые внедряют его сами. AI-аудит, корпоративные воркшопы, хакатоны и сопровождение.">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #FBF9F5;
+    --card:      #FFFFFF;
+    --ink:       #1A1613;
+    --muted:     #6E655C;
+    --accent:    #E35B27;
+    --accent-dk: #C24A1D;
+    --accent-sf: #FBEBE1;
+    --line:      #ECE5DB;
+    --shadow:    0 1px 2px rgba(26,22,19,.04), 0 12px 32px -12px rgba(26,22,19,.10);
+    --shadow-hi: 0 2px 4px rgba(26,22,19,.05), 0 22px 48px -16px rgba(226,91,39,.22);
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ── language switching ── */
+  .en { display: none; }
+  body.lang-en .ru { display: none; }
+  body.lang-en .en { display: revert; }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 68px 0; }
+  @media (max-width: 640px) { section { padding: 48px 0; } }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent-dk); display: inline-flex; align-items: center; gap: 8px;
+  }
+  .eyebrow::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+  .kicker {
+    font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent-dk); margin-bottom: 18px;
+  }
+
+  h1 { font-size: clamp(32px, 5.4vw, 54px); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: clamp(26px, 3.6vw, 38px); line-height: 1.15; font-weight: 800; letter-spacing: -.015em; }
+  h3 { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+  .accent { color: var(--accent); }
+
+  p.lead { font-size: clamp(16px, 1.7vw, 19px); color: var(--muted); font-weight: 500; }
+
+  /* ── top bar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(140%) blur(10px);
+    background: rgba(251,249,245,.82);
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s;
+  }
+  .topbar.scrolled { border-bottom-color: var(--line); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { font-weight: 800; letter-spacing: -.02em; font-size: 17px; text-decoration: none; color: var(--ink); }
+  .brand .dot { color: var(--accent); }
+
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--card); gap: 2px; }
+  .lang button {
+    font-family: inherit; font-size: 12.5px; font-weight: 700; letter-spacing: .04em;
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+    padding: 6px 13px; border-radius: 999px; transition: all .16s;
+  }
+  .lang button.active { background: var(--ink); color: #fff; }
+
+  /* ── buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; text-decoration: none;
+    font-weight: 700; font-size: 15.5px; border-radius: 12px; padding: 14px 24px;
+    transition: transform .14s ease, box-shadow .2s, background .18s;
+    cursor: pointer; border: 1.5px solid transparent; white-space: nowrap;
+  }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 20px -8px rgba(226,91,39,.55); }
+  .btn-primary:hover { background: var(--accent-dk); transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(226,91,39,.6); }
+  .btn-ghost { background: var(--card); color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  /* ── hero ── */
+  .hero { padding-top: 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; }
+  .hero h1 { margin: 18px 0 22px; }
+  .hero .lead { max-width: 30em; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .hero-note { margin-top: 16px; font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+  .hero-note::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #46b26a; box-shadow: 0 0 0 3px rgba(70,178,106,.18); }
+
+  .photo-frame { position: relative; max-width: 420px; margin-left: auto; }
+  .photo-frame::before {
+    content: ''; position: absolute; inset: 0; transform: rotate(-3deg) translate(14px, 14px);
+    background: var(--accent-sf); border-radius: 24px; z-index: 0;
+  }
+  .photo-frame img {
+    position: relative; z-index: 1; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 12%;
+    border-radius: 24px; display: block;
+    box-shadow: var(--shadow); background: var(--accent-sf);
+  }
+  .photo-tag {
+    position: absolute; z-index: 2; bottom: 18px; left: 18px; right: 18px;
+    background: rgba(26,22,19,.72); backdrop-filter: blur(6px); color: #fff;
+    font-size: 13px; font-weight: 600; padding: 10px 15px; border-radius: 13px; line-height: 1.4;
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 34px; }
+    .hero { padding-top: 24px; }
+    .photo-frame { max-width: 380px; margin-left: 0; }
+    .photo-frame::before { transform: rotate(-3deg) translate(9px, 9px); }
+  }
+
+  /* ── problem → result ── */
+  .band { background: var(--ink); color: #fff; border-radius: 28px; padding: 56px; }
+  .band h2 { max-width: 16em; }
+  .band .lead { color: rgba(255,255,255,.72); margin-top: 20px; max-width: 40em; }
+  .band .arrow { color: var(--accent); font-weight: 800; }
+  @media (max-width: 640px) { .band { padding: 36px 26px; border-radius: 22px; } }
+
+  /* ── section head ── */
+  .head { max-width: 40em; margin-bottom: 40px; }
+  .head p.lead { margin-top: 14px; }
+
+  /* ── format cards ── */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    padding: 30px; box-shadow: var(--shadow); position: relative;
+    transition: transform .16s, box-shadow .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hi); border-color: transparent; }
+  .card.flagship { border-color: var(--accent); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-ic {
+    width: 46px; height: 46px; border-radius: 13px; background: var(--accent-sf);
+    display: flex; align-items: center; justify-content: center; color: var(--accent-dk);
+  }
+  .card-ic svg { width: 24px; height: 24px; }
+  .badge { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--accent); padding: 5px 11px; border-radius: 999px; }
+  .card h3 { margin-bottom: 9px; }
+  .card p { font-size: 15px; color: var(--muted); }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } .card { padding: 26px; } }
+
+  /* ── process ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 34px; counter-reset: s; }
+  .step { position: relative; padding: 26px 4px 4px; }
+  .step::before {
+    counter-increment: s; content: counter(s, decimal-leading-zero);
+    font-size: 14px; font-weight: 800; color: var(--accent);
+    letter-spacing: .05em;
+  }
+  .step h3 { font-size: 17px; margin: 8px 0 6px; }
+  .step p { font-size: 14.5px; color: var(--muted); }
+  .step-line { height: 3px; background: var(--accent-sf); border-radius: 3px; margin-top: 14px; position: relative; overflow: hidden; }
+  .step-line::after { content: ''; position: absolute; inset: 0; width: 34%; background: var(--accent); border-radius: 3px; }
+  @media (max-width: 720px) { .steps { grid-template-columns: 1fr; gap: 6px; } .step { padding: 20px 0; border-bottom: 1px solid var(--line); } .step-line { display: none; } }
+
+  /* ── cases ── */
+  .cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .case { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 30px; box-shadow: var(--shadow); }
+  .case-name { font-size: 13px; font-weight: 800; letter-spacing: .04em; color: var(--accent-dk); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 9px; }
+  .case-name::before { content: ''; width: 22px; height: 2px; background: var(--accent); }
+  .case dl { display: grid; grid-template-columns: auto 1fr; gap: 12px 16px; }
+  .case dt { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding-top: 2px; white-space: nowrap; }
+  .case dd { font-size: 15px; color: var(--ink); }
+  .case dd.res { font-weight: 600; }
+  .cases-note { grid-column: 1 / -1; font-size: 13px; color: var(--muted); font-style: italic; margin-top: 2px; }
+  @media (max-width: 640px) { .cases { grid-template-columns: 1fr; } .case { padding: 26px; } .case dl { grid-template-columns: 1fr; gap: 5px 0; } .case dd { margin-bottom: 12px; } }
+
+  /* ── about ── */
+  .about-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: start; }
+  .about-grid .lead { font-size: 18px; color: var(--ink); font-weight: 500; }
+  .about-grid .lead + .lead { margin-top: 18px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; }
+  .chip { font-size: 13px; font-weight: 600; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; color: var(--ink); }
+  .chip a { color: inherit; text-decoration: none; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 22px; } }
+
+  /* ── final cta ── */
+  .final { background: var(--accent-sf); border-radius: 28px; padding: 60px; text-align: center; }
+  .final h2 { max-width: 15em; margin: 0 auto; }
+  .final .lead { max-width: 34em; margin: 18px auto 0; color: #7a5240; }
+  .final-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+  .contacts { display: flex; flex-wrap: wrap; gap: 10px 26px; justify-content: center; margin-top: 34px; padding-top: 26px; border-top: 1px solid rgba(226,91,39,.2); }
+  .contacts a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 15px; }
+  .contacts a:hover { color: var(--accent-dk); }
+  .contacts svg { width: 17px; height: 17px; color: var(--accent-dk); }
+  @media (max-width: 640px) { .final { padding: 40px 24px; border-radius: 22px; } }
+
+  footer { text-align: center; padding: 40px 0 56px; font-size: 13.5px; color: var(--muted); }
+  footer .brand { font-size: 14px; }
+
+  ::selection { background: var(--accent); color: #fff; }
+</style>
+</head>
+
+<body class="lang-ru">
+
+<!-- ══════════ TOP BAR ══════════ -->
+<div class="topbar" id="topbar">
+  <div class="wrap">
+    <a href="#top" class="brand">Дима&nbsp;Рудковский<span class="dot">.</span></a>
+    <div class="lang" role="group" aria-label="Language">
+      <button data-lang="ru" class="active" onclick="setLang('ru')">RU</button>
+      <button data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</div>
+
+<a id="top"></a>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">
+        <span class="ru">AI-тренер · консультант</span>
+        <span class="en">AI trainer · consultant</span>
+      </span>
+      <h1>
+        <span class="ru">Выращиваю в командах людей, которые <span class="accent">реально работают с ИИ</span></span>
+        <span class="en">I grow people on your team who <span class="accent">actually work with AI</span></span>
+      </h1>
+      <p class="lead">
+        <span class="ru">Не лекции про будущее: нахожу в ваших процессах 2–3 места, где ИИ даст измеримый эффект, и вместе с командой собираю пилот. 12+ лет в IT — от QA до Deputy&nbsp;COO: понимаю процессы и команды изнутри.</span>
+        <span class="en">Not lectures about the future: I find 2–3 places in your processes where AI delivers a measurable effect, and build a pilot together with your team. 12+ years in IT, from QA to Deputy&nbsp;COO: I understand processes and teams from the inside.</span>
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://t.me/Drudkovski" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.8 15.6l-.4 4.5c.5 0 .8-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.6.2 1.8-.8l3.3-15.4c.3-1.3-.5-1.8-1.4-1.5L1.3 9.9c-1.3.5-1.3 1.2-.2 1.5l5.5 1.7L18.9 6c.6-.4 1.1-.2.7.2L9.8 15.6z"/></svg>
+          <span class="ru">Обсудить задачу</span><span class="en">Discuss your case</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:rudkovskiid@gmail.com">
+          <span class="ru">Написать на почту</span><span class="en">Email me</span>
+        </a>
+      </div>
+      <div class="hero-note">
+        <span class="ru">Отвечаю сам — без бота и автоворонок</span>
+        <span class="en">A real human replies — no bots, no funnels</span>
+      </div>
+    </div>
+
+    <div class="photo-frame">
+      <img src="assets/dima.jpg" alt="Дима Рудковский" width="731" height="1100" fetchpriority="high">
+      <div class="photo-tag">
+        <span class="ru">Дима Рудковский · веду воркшопы для крипто-, digital- и tech-команд</span>
+        <span class="en">Dima Rudkovskii · workshops for crypto, digital and tech teams</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROBLEM → RESULT ══════════ -->
+<section>
+  <div class="wrap">
+    <div class="band">
+      <h2>
+        <span class="ru">Команды уже пробуют ИИ. Но чаще всего — хаотично</span>
+        <span class="en">Teams are already trying AI. Usually in a scattered way</span>
+      </h2>
+      <p class="lead">
+        <span class="ru">Кто-то щупает ChatGPT, кто-то нет — в командный результат это не складывается. Я нахожу 2–3 процесса с измеримым эффектом, подбираю безопасные инструменты и собираю с командой пилот. <span class="arrow">→</span> На выходе понятно, что масштабировать, — и команда продолжает без тренера.</span>
+        <span class="en">One person pokes at ChatGPT, another doesn't — and it never adds up to a team result. I find 2–3 processes with a measurable effect, pick safe tools and build a pilot with your team. <span class="arrow">→</span> The outcome: you know what's worth scaling — and the team keeps going without a trainer.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FORMATS ══════════ -->
+<section id="formats">
+  <div class="wrap">
+    <div class="head">
+      <div class="kicker"><span class="ru">Форматы работы</span><span class="en">How we can work</span></div>
+      <h2><span class="ru">Лесенка под задачу — можно зайти с любой ступени</span><span class="en">A ladder built around your task — start at any step</span></h2>
+      <p class="lead"><span class="ru">Вход — AI-аудит: находим процессы, где ИИ окупится. Флагман — корпоративные воркшопы, вокруг которых достраивается всё остальное.</span><span class="en">The entry point is an AI audit: we find the processes where AI pays off. The flagship is corporate workshops, with everything else built around them.</span></p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></svg></div>
+        </div>
+        <h3><span class="ru">AI-аудит · диагностика зрелости</span><span class="en">AI audit · maturity diagnostic</span></h3>
+        <p><span class="ru">Точка входа: интервью и анкеты → 2–3 процесса, где ИИ даст измеримый эффект, безопасные инструменты под них и роадмап пилота.</span><span class="en">The entry point: interviews and surveys → 2–3 processes where AI delivers a measurable effect, safe tools for them and a pilot roadmap.</span></p>
+      </div>
+
+      <div class="card flagship">
+        <div class="card-top">
+          <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5 5.6.8-4 3.9.9 5.5L12 20l-5 2.6.9-5.5-4-3.9 5.6-.8z"/></svg></div>
+          <span class="badge"><span class="ru">Флагман</span><span class="en">Flagship</span></span>
+        </div>
+        <h3><span class="ru">Корпоративные воркшопы</span><span class="en">Corporate workshops</span></h3>
+        <p><span class="ru">Серия практикумов по уровням Light / Medium / Advanced. Формат «делай вместе со мной» — на реальных задачах вашей команды.</span><span class="en">A series of hands-on sessions by level: Light / Medium / Advanced. A “do it with me” format — on your team's real tasks.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 12.5a1 1 0 00.8 1.6H11l-1 7.9 8.5-10.5a1 1 0 00-.8-1.6H12z"/></svg></div>
+        </div>
+        <h3><span class="ru">AI-хакатон</span><span class="en">AI hackathon</span></h3>
+        <p><span class="ru">Команды автоматизируют один сквозной процесс end-to-end: выход одной команды — вход следующей. Реальный прогон, а не демо.</span><span class="en">Teams automate one end-to-end process: the output of one team becomes the input of the next. A real run, not a demo.</span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg></div>
+        </div>
+        <h3><span class="ru">Сопровождение · AI-амбассадоры</span><span class="en">Support · AI ambassadors</span></h3>
+        <p><span class="ru">Выращиваем внутренних чемпионов и поддерживаем команду после обучения — чтобы навык не угас, а рос.</span><span class="en">We grow internal champions and support the team after training — so the skill doesn't fade but keeps growing.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROCESS ══════════ -->
+<section id="process">
+  <div class="wrap">
+    <div class="head">
+      <div class="kicker"><span class="ru">Как это выглядит</span><span class="en">What it looks like</span></div>
+      <h2><span class="ru">От первого интервью до showcase результатов</span><span class="en">From the first interview to a results showcase</span></h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <h3><span class="ru">Интервью с лидами</span><span class="en">Interviews with leads</span></h3>
+        <p><span class="ru">Снимаем реальные задачи, уровень команды и внутренний словарь.</span><span class="en">We capture real tasks, the team's level and its internal vocabulary.</span></p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <h3><span class="ru">Анкета сотрудников</span><span class="en">Employee survey</span></h3>
+        <p><span class="ru">Короткий тест: уровень, инструменты, ожидания, задачи на автоматизацию.</span><span class="en">A short test: level, tools, expectations, tasks to automate.</span></p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <h3><span class="ru">Сборка программы</span><span class="en">Program assembly</span></h3>
+        <p><span class="ru">Под направления и уровни. Структуру согласуем с вами до старта.</span><span class="en">By track and level. We agree the structure with you before we start.</span></p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <h3><span class="ru">Обучение</span><span class="en">Training</span></h3>
+        <p><span class="ru">Практикумы по уровням, hands-on — в основном практика, немного теории.</span><span class="en">Hands-on sessions by level — mostly practice, a little theory.</span></p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <h3><span class="ru">Практика · хакатон</span><span class="en">Practice · hackathon</span></h3>
+        <p><span class="ru">Прогон на реальном сквозном процессе, а не на учебном примере.</span><span class="en">A run on a real end-to-end process, not a toy example.</span></p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <h3><span class="ru">Showcase результатов</span><span class="en">Results showcase</span></h3>
+        <p><span class="ru">Команды показывают, что собрали, — и забирают идеи друг у друга.</span><span class="en">Teams present what they built — and borrow ideas from each other.</span></p>
+        <div class="step-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CASES ══════════ -->
+<section id="cases">
+  <div class="wrap">
+    <div class="head">
+      <div class="kicker"><span class="ru">Кейсы</span><span class="en">Cases</span></div>
+      <h2><span class="ru">Задача → что делали → результат</span><span class="en">Task → what we did → result</span></h2>
+    </div>
+
+    <div class="cases">
+      <div class="case">
+        <div class="case-name"><span class="ru">Крипто-инфраструктурная компания</span><span class="en">Crypto-infrastructure company</span></div>
+        <dl>
+          <dt><span class="ru">Задача</span><span class="en">Task</span></dt>
+          <dd><span class="ru">Поднять AI-грамотность в HR, Legal и OPS — команды использовали ИИ разрозненно.</span><span class="en">Raise AI literacy across HR, Legal and OPS — teams used AI inconsistently.</span></dd>
+          <dt><span class="ru">Делали</span><span class="en">We did</span></dt>
+          <dd><span class="ru">Серия воркшопов по уровням плюс прикладные инструменты под задачи рекрутинга.</span><span class="en">A series of workshops by level plus applied tools for recruiting tasks.</span></dd>
+          <dt><span class="ru">Результат</span><span class="en">Result</span></dt>
+          <dd class="res"><span class="ru">Повторные заказы, программа расширилась на новые отделы.</span><span class="en">Repeat engagements; the program expanded to new departments.</span></dd>
+        </dl>
+      </div>
+
+      <div class="case">
+        <div class="case-name"><span class="ru">Digital-агентство</span><span class="en">Digital agency</span></div>
+        <dl>
+          <dt><span class="ru">Задача</span><span class="en">Task</span></dt>
+          <dd><span class="ru">Команда работала с ИИ без системы: разный уровень, нет связи с рабочими задачами.</span><span class="en">The team used AI without a system: uneven levels, no link to real work.</span></dd>
+          <dt><span class="ru">Делали</span><span class="en">We did</span></dt>
+          <dd><span class="ru">Два воркшопа (общий обзор и углублённый с ролевыми сценариями) и диагностика AI-зрелости.</span><span class="en">Two workshops (a broad overview and a deeper one with role scenarios) and an AI-maturity diagnostic.</span></dd>
+          <dt><span class="ru">Результат</span><span class="en">Result</span></dt>
+          <dd class="res"><span class="ru">Сегментировали команду по уровням, зафиксировали роадмап внедрения.</span><span class="en">Segmented the team by level and set an adoption roadmap.</span></dd>
+        </dl>
+      </div>
+
+      <div class="cases-note">
+        <span class="ru">Имена клиентов — по согласованию; здесь обезличено.</span>
+        <span class="en">Client names are shared on request; anonymised here.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div>
+      <div class="kicker"><span class="ru">Обо мне</span><span class="en">About me</span></div>
+      <h2><span class="ru">Коллега, который попробовал чуть раньше</span><span class="en">A colleague who tried it a bit earlier</span></h2>
+    </div>
+    <div>
+      <p class="lead">
+        <span class="ru">12+ лет в IT — прошёл путь от QA до Deputy COO. Не «просто тренер»: за спиной операционка, поэтому понимаю, как на самом деле устроены процессы и люди.</span>
+        <span class="en">12+ years in IT — I went from QA to Deputy COO. Not “just a trainer”: I have an operations background, so I understand how processes and people actually work.</span>
+      </p>
+      <p class="lead">
+        <span class="ru">Автор Telegram-канала «Шаг за шагом в ИИ» с живыми агентными кейсами. Фильтр материала простой: беру только то, что можно объяснить за 2 минуты без единой строчки кода.</span>
+        <span class="en">I write the Telegram channel “Step by step into AI” with live, agentic cases. My filter is simple: I only teach what I can explain in two minutes, without a single line of code.</span>
+      </p>
+      <div class="chips">
+        <span class="chip"><span class="ru">12+ лет в IT</span><span class="en">12+ years in IT</span></span>
+        <span class="chip">QA → Deputy COO</span>
+        <span class="chip"><span class="ru">Воркшопы Light / Medium / Advanced</span><span class="en">Light / Medium / Advanced workshops</span></span>
+        <span class="chip"><a href="https://t.me/aistepup" target="_blank" rel="noopener">@aistepup</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FINAL CTA ══════════ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="final">
+      <h2><span class="ru">Расскажите про вашу команду</span><span class="en">Tell me about your team</span></h2>
+      <p class="lead">
+        <span class="ru">За 30 минут прикинем, в каких процессах ИИ даст измеримый эффект — и стоит ли за это браться. Без презентаций и продажи.</span>
+        <span class="en">In 30 minutes we'll map where AI can deliver a measurable effect in your processes — and whether it's worth doing. No slide decks, no pitch.</span>
+      </p>
+      <div class="final-cta">
+        <a class="btn btn-primary" href="https://t.me/Drudkovski" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.8 15.6l-.4 4.5c.5 0 .8-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.6.2 1.8-.8l3.3-15.4c.3-1.3-.5-1.8-1.4-1.5L1.3 9.9c-1.3.5-1.3 1.2-.2 1.5l5.5 1.7L18.9 6c.6-.4 1.1-.2.7.2L9.8 15.6z"/></svg>
+          <span class="ru">Обсудить задачу в Telegram</span><span class="en">Discuss your case on Telegram</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:rudkovskiid@gmail.com">
+          <span class="ru">Написать на почту</span><span class="en">Email me</span>
+        </a>
+      </div>
+
+      <div class="contacts">
+        <a href="https://t.me/Drudkovski" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.8 15.6l-.4 4.5c.5 0 .8-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.6.2 1.8-.8l3.3-15.4c.3-1.3-.5-1.8-1.4-1.5L1.3 9.9c-1.3.5-1.3 1.2-.2 1.5l5.5 1.7L18.9 6c.6-.4 1.1-.2.7.2L9.8 15.6z"/></svg>
+          <span>Telegram</span>
+        </a>
+        <a href="mailto:rudkovskiid@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>
+          <span>rudkovskiid@gmail.com</span>
+        </a>
+        <a href="https://www.linkedin.com/in/dimitrii-rudkovskii-828271b3/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05C20.5 8.65 22 10.9 22 14.3V21h-4v-5.9c0-1.4-.03-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9z"/></svg>
+          <span>LinkedIn</span>
+        </a>
+        <a href="https://t.me/aistepup" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.8 15.6l-.4 4.5c.5 0 .8-.2 1-.5l2.4-2.3 5 3.6c.9.5 1.6.2 1.8-.8l3.3-15.4c.3-1.3-.5-1.8-1.4-1.5L1.3 9.9c-1.3.5-1.3 1.2-.2 1.5l5.5 1.7L18.9 6c.6-.4 1.1-.2.7.2L9.8 15.6z"/></svg>
+          <span class="ru">Канал @aistepup</span><span class="en">Channel @aistepup</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="#top" class="brand">Дима Рудковский<span class="dot">.</span></a>
+  <div style="margin-top:8px">
+    <span class="ru">AI-тренер и консультант · 2026</span>
+    <span class="en">AI trainer & consultant · 2026</span>
+  </div>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.body.classList.toggle('lang-en', lang === 'en');
+    document.body.classList.toggle('lang-ru', lang === 'ru');
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+  }
+  (function () {
+    var saved;
+    try { saved = localStorage.getItem('lang'); } catch (e) {}
+    if (!saved) {
+      var nav = (navigator.language || 'ru').toLowerCase();
+      saved = nav.indexOf('ru') === 0 ? 'ru' : 'en';
+    }
+    setLang(saved);
+  })();
+
+  var topbar = document.getElementById('topbar');
+  window.addEventListener('scroll', function () {
+    topbar.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+</script>
+
+</body>
+</html>
