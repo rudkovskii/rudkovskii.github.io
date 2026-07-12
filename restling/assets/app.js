@@ -33,6 +33,12 @@
   ];
   var MOODS = ['radiant', 'steady', 'tired', 'drained'];
 
+  // Арт-стили питомцев (docs/05, раздел «Арт-стили: ресерч и решение»).
+  // Порядок массива = порядок кнопок в UI. 'soft' — базовые модули <id>.js,
+  // остальные — стилевые модули <id>.<style>.js (см. assets/pets/CONTRACT.md v2).
+  var STYLES = ['soft', 'pixel', 'cartoon', 'real'];
+  var STYLE_DEFAULT = 'soft';
+
   // Дефолты слайдеров = «отличный день», recovery 84 → radiant (ТЗ 3)
   var DEFAULTS = { sleep: 7.5, hrv: 65, readiness: 88 };
   // Пресеты S3
@@ -50,7 +56,7 @@
   var PET_TAP_WINDOW_MS = 1500;   // F1: окно «серии» тапов
   var PET_NAME_MAX = 20;          // F3
 
-  var LS = { lang: 'rp_lang', pet: 'rp_pet', names: 'rp_pet_names', visit: 'rp_last_visit' };
+  var LS = { lang: 'rp_lang', pet: 'rp_pet', names: 'rp_pet_names', visit: 'rp_last_visit', style: 'rp_style' };
   var SS_SURVEY = 'rp_survey_done';
 
   /* ===================== 2. Утилиты ===================== */
@@ -127,6 +133,10 @@
     names: (function () {
       try { return JSON.parse(lsGet(LS.names) || '{}') || {}; } catch (e) { return {}; }
     })(),
+    style: (function () {
+      var saved = lsGet(LS.style);
+      return STYLES.indexOf(saved) !== -1 ? saved : STYLE_DEFAULT; // неизвестный стиль → дефолт
+    })(),
     values: { sleep: DEFAULTS.sleep, hrv: DEFAULTS.hrv, readiness: DEFAULTS.readiness },
     recovery: 0,
     mood: null,
@@ -135,8 +145,9 @@
     sliderTouched: false
   };
 
-  var registry = {};        // id → {id, nameEn, nameRu, render}
-  var renderedKey = null;   // «petId:mood:registered» — чтобы не перерисовывать зря
+  var registry = {};        // id → {id, nameEn, nameRu, render} — базовые модули (стиль soft)
+  var styleRegistry = {};   // id → { cartoon|real|pixel → render } — стилевые модули (CONTRACT v2)
+  var renderedKey = null;   // «petId:mood:style:флаги регистрации» — чтобы не перерисовывать зря
 
   /* ===================== 6. i18n ===================== */
 
@@ -240,20 +251,31 @@
       ears + body + eyes + extra + '</svg>';
   }
 
-  function petSvg(id, mood) {
-    var reg = registry[id];
-    if (reg) {
-      try {
-        var out = reg.render(mood);
-        if (typeof out === 'string' && out.indexOf('<svg') !== -1) return out;
-      } catch (e) { try { console.warn('pet render failed', id, mood, e); } catch (_) {} }
+  function tryRender(fn, id, mood) {
+    if (typeof fn !== 'function') return null;
+    try {
+      var out = fn(mood);
+      if (typeof out === 'string' && out.indexOf('<svg') !== -1) return out;
+    } catch (e) { try { console.warn('pet render failed', id, mood, e); } catch (_) {} }
+    return null;
+  }
+
+  // render(petId, style): стилевой модуль → fallback на soft → placeholder-blob.
+  function petSvg(id, mood, style) {
+    style = style || state.style;
+    var out = null;
+    if (style !== STYLE_DEFAULT) {
+      var styles = styleRegistry[id];
+      out = tryRender(styles && styles[style], id + '.' + style, mood);
     }
-    return fallbackRender(id, mood);
+    if (out === null) out = tryRender(registry[id] && registry[id].render, id, mood);
+    return (out === null) ? fallbackRender(id, mood) : out;
   }
 
   // Кросс-фейд слоёв сцены (≤400 мс, ТЗ 4)
   function setStagePet(mood, instant) {
-    var key = state.petId + ':' + mood + ':' + (registry[state.petId] ? 1 : 0);
+    var styled = styleRegistry[state.petId] && styleRegistry[state.petId][state.style] ? 1 : 0;
+    var key = state.petId + ':' + mood + ':' + state.style + ':' + (registry[state.petId] ? 1 : 0) + ':' + styled;
     if (key === renderedKey && !instant) return;
     renderedKey = key;
     var layer = document.createElement('div');
@@ -292,8 +314,58 @@
     }
   };
 
+  // Стилевые модули assets/pets/<id>.<style>.js (CONTRACT v2)
+  window.registerPetStyle = function (def) {
+    if (!def || typeof def.petId !== 'string' || typeof def.style !== 'string' || typeof def.render !== 'function') {
+      try { console.warn('registerPetStyle: invalid definition', def); } catch (e) {}
+      return;
+    }
+    if (def.style === STYLE_DEFAULT || STYLES.indexOf(def.style) === -1) {
+      try { console.warn('registerPetStyle: unknown style "' + def.style + '" (soft регистрируется через registerPet)'); } catch (e) {}
+      return;
+    }
+    (styleRegistry[def.petId] = styleRegistry[def.petId] || {})[def.style] = def.render;
+    // Перерисовать всё, что прямо сейчас показывает этого питомца в этом стиле
+    if (def.style === state.style) {
+      renderCardPreview(def.petId);
+      if (def.petId === state.petId) {
+        renderedKey = null;
+        setStagePet(state.dozing ? 'drained' : state.mood || 'radiant', true);
+        renderHeroPet();
+      }
+    }
+  };
+
   function renderHeroPet() {
     if (el.heroPet) el.heroPet.innerHTML = petSvg(state.petId, 'radiant');
+  }
+
+  /* ===================== 8b. Арт-стиль питомцев ===================== */
+
+  function refreshStyleSwitch() {
+    $all('[data-style]').forEach(function (btn) {
+      var active = btn.getAttribute('data-style') === state.style;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  // Смена стиля глобальна (сцена + hero + карточки + модалка)
+  // и НЕ сбрасывает выбранного питомца, mood и слайдеры.
+  function setStyle(styleKey, byUser) {
+    if (STYLES.indexOf(styleKey) === -1) return;
+    if (styleKey === state.style && byUser) return;
+    state.style = styleKey;
+    lsSet(LS.style, styleKey);
+    renderedKey = null;
+    setStagePet(state.dozing ? 'drained' : state.mood || 'radiant', true);
+    renderHeroPet();
+    PETS.forEach(function (p) { renderCardPreview(p.id); });
+    if (el.modal && el.modal.classList.contains('is-open') && el.modalPet) {
+      el.modalPet.innerHTML = petSvg(state.petId, 'steady');
+    }
+    refreshStyleSwitch();
+    if (byUser) track('style_changed', { style: styleKey });
   }
 
   function updateFallbackNote() {
@@ -749,6 +821,11 @@
     $all('.lang-switch button').forEach(function (btn) {
       btn.addEventListener('click', function () { setLang(btn.getAttribute('data-lang'), true); });
     });
+
+    // арт-стиль питомцев
+    $all('[data-style]').forEach(function (btn) {
+      btn.addEventListener('click', function () { setStyle(btn.getAttribute('data-style'), true); });
+    });
   }
 
   function init() {
@@ -763,6 +840,7 @@
     renderHeroPet();
     updateScene();
     syncNameField();
+    refreshStyleSwitch();        // подсветить сохранённый стиль
     setLang(state.lang, false);  // применяет i18n ко всему
     initReturnVisit();
 

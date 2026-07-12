@@ -115,6 +115,17 @@
               <input type="text" id="petNameInput" maxlength="20" data-i18n-placeholder="demo.namePlaceholder" data-i18n-aria="demo.nameLabel">
             </div>
             <button type="button" class="change-pet-link" id="changePetLink" data-i18n="demo.changePet">change pet</button>
+
+            <!-- Переключатель арт-стиля (порядок кнопок = решение продакта, docs/05) -->
+            <div class="style-switch-field">
+              <span class="style-switch-label" data-i18n="demo.styleLabel">Art style</span>
+              <div class="style-switch" id="styleSwitch" role="group" data-i18n-aria="demo.styleAria">
+                <button type="button" data-style="soft" class="is-active" aria-pressed="true" data-i18n="style.soft">Soft</button>
+                <button type="button" data-style="pixel" aria-pressed="false" data-i18n="style.pixel">Pixel</button>
+                <button type="button" data-style="cartoon" aria-pressed="false" data-i18n="style.cartoon">Cartoon</button>
+                <button type="button" data-style="real" aria-pressed="false" data-i18n="style.real">Real</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -207,5 +218,22 @@
   <script src="assets/pets/rabbit.js"></script>
   <script src="assets/pets/sloth.js"></script>
   <script src="assets/pets/otter.js"></script>
+  <!-- Стилевые модули <id>.<style>.js (CONTRACT.md v2) — строго ПОСЛЕ базовых.
+       Файлов может ещё не быть: 404 безопасен, app.js делает fallback на soft. -->
+  <script src="assets/pets/cat.pixel.js"></script>
+  <script src="assets/pets/cat.cartoon.js"></script>
+  <script src="assets/pets/cat.real.js"></script>
+  <script src="assets/pets/capybara.pixel.js"></script>
+  <script src="assets/pets/capybara.cartoon.js"></script>
+  <script src="assets/pets/capybara.real.js"></script>
+  <script src="assets/pets/rabbit.pixel.js"></script>
+  <script src="assets/pets/rabbit.cartoon.js"></script>
+  <script src="assets/pets/rabbit.real.js"></script>
+  <script src="assets/pets/sloth.pixel.js"></script>
+  <script src="assets/pets/sloth.cartoon.js"></script>
+  <script src="assets/pets/sloth.real.js"></script>
+  <script src="assets/pets/otter.pixel.js"></script>
+  <script src="assets/pets/otter.cartoon.js"></script>
+  <script src="assets/pets/otter.real.js"></script>
 </body>
 </html>

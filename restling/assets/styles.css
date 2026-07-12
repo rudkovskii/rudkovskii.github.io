@@ -286,6 +286,23 @@ input[type="range"]::-moz-range-thumb {
 }
 .change-pet-link { font-size: 14px; color: var(--calm); background: none; border: none; cursor: pointer; text-decoration: underline; font-family: var(--font-body); padding: 10px 4px; min-height: 44px; }
 
+/* переключатель арт-стиля (сегмент-контрол, по киту — как .chip/.lang-switch) */
+.style-switch-field { display: flex; flex-direction: column; gap: 4px; flex: 1 1 100%; }
+.style-switch-label { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+.style-switch {
+  display: inline-flex; flex-wrap: wrap; gap: 4px; align-self: flex-start;
+  background: var(--surface-soft); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px;
+}
+.style-switch button {
+  border: none; background: none; color: var(--ink-soft);
+  font-family: var(--font-body); font-weight: 600; font-size: 14px;
+  border-radius: 999px; padding: 8px 14px; min-height: 36px; cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.style-switch button:hover { background: var(--calm-soft); color: var(--ink); }
+.style-switch button.is-active { background: var(--ink); color: var(--surface); }
+
 /* микро-опрос F4 */
 .survey {
   display: none;
