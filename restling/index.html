@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restling — a pet that rests when you rest</title>
+  <meta name="description" content="A tiny companion that mirrors your sleep, HRV and readiness from Oura, Whoop or Apple Watch.">
+  <meta name="theme-color" content="#FBF6EE">
+  <!-- OG-теги: текстовые only; og:image — вторая итерация вместе с шер-карточкой (P3) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Restling — a pet that rests when you rest">
+  <meta property="og:description" content="A tiny companion that mirrors your sleep, HRV and readiness from Oura, Whoop or Apple Watch.">
+  <meta property="og:site_name" content="Restling">
+  <!-- Favicon — emoji через data-URI, без внешних файлов -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E">
+  <!-- Шрифты — опциональный внешний ресурс: офлайн/file:// работает системный фоллбек -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a class="wordmark" href="#top">restl<span class="spark">✦</span>ng</a>
+    <div class="lang-switch" role="group" data-i18n-aria="header.langAria">
+      <button type="button" data-lang="en" class="is-active">EN</button>
+      <button type="button" data-lang="ru">RU</button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- S1. Hero -->
+    <section class="section hero" id="hero">
+      <div class="hero-copy">
+        <h1 data-i18n="hero.title">A pet that rests when you rest</h1>
+        <p class="section-sub" data-i18n="hero.subtitle">Your companion mirrors your sleep, HRV and readiness from Oura, Whoop or Apple Watch.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#demo" data-i18n="hero.tryDemo">Try the demo</a>
+          <a class="btn btn-secondary" href="#cta" data-i18n="hero.getAccess">Get early access</a>
+        </div>
+      </div>
+      <div class="hero-pet" id="heroPet" data-i18n-aria="demo.sceneAria" role="img"></div>
+    </section>
+
+    <!-- S2. Выбор питомца -->
+    <section class="section" id="choose">
+      <h2 data-i18n="choose.title">Choose your companion</h2>
+      <p class="section-sub" data-i18n="choose.subtitle">One little creature to live alongside your mornings.</p>
+      <div class="pet-grid" id="petGrid"></div>
+    </section>
+
+    <!-- S3. Демо -->
+    <section class="section" id="demo">
+      <h2 data-i18n="demo.title">This morning, together</h2>
+      <p class="section-sub" data-i18n="demo.subtitle">Move the sliders to your real morning numbers.</p>
+
+      <div class="demo-wrap">
+        <div>
+          <div class="scene scene--radiant" id="scene" data-i18n-aria="demo.sceneAria" role="img">
+            <div class="scene-toast" id="sceneToast" aria-live="polite"></div>
+            <div class="pet-stage" id="petStage"></div>
+          </div>
+
+          <div class="status-line" aria-live="polite">
+            <p class="status-phrase" id="statusPhrase"></p>
+            <p class="status-score" id="statusScore"></p>
+            <p class="fallback-note" id="fallbackNote" hidden></p>
+          </div>
+
+          <!-- F4. Микро-опрос -->
+          <div class="survey" id="survey">
+            <p id="surveyQuestion" data-i18n="survey.question">Does this match how you feel today?</p>
+            <div class="survey-actions">
+              <button type="button" class="btn btn-primary" data-survey-answer="yes" data-i18n="survey.yes">Yes</button>
+              <button type="button" class="btn btn-secondary" data-survey-answer="no" data-i18n="survey.no">Not really</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-panel">
+          <div class="slider-row">
+            <div class="slider-head">
+              <span class="slider-name" data-i18n="sliders.sleep">Sleep</span>
+              <span class="slider-value" id="valueSleep">7 h 30 m</span>
+            </div>
+            <input type="range" id="sliderSleep" min="3" max="10" step="0.25" value="7.5" data-i18n-aria="sliders.sleepAria">
+          </div>
+          <div class="slider-row">
+            <div class="slider-head">
+              <span class="slider-name" data-i18n="sliders.hrv">HRV</span>
+              <span class="slider-value" id="valueHrv">65 ms</span>
+            </div>
+            <input type="range" id="sliderHrv" min="20" max="120" step="1" value="65" data-i18n-aria="sliders.hrvAria">
+          </div>
+          <div class="slider-row">
+            <div class="slider-head">
+              <span class="slider-name" data-i18n="sliders.readiness">Readiness</span>
+              <span class="slider-value" id="valueReadiness">88</span>
+            </div>
+            <input type="range" id="sliderReadiness" min="0" max="100" step="1" value="88" data-i18n-aria="sliders.readinessAria">
+          </div>
+
+          <div class="preset-row">
+            <button type="button" class="chip" data-preset="great">☀️ <span data-i18n="presets.great">Great night</span></button>
+            <button type="button" class="chip" data-preset="rough">🌙 <span data-i18n="presets.rough">Rough night</span></button>
+          </div>
+
+          <div class="pet-meta-row">
+            <!-- F3. Имя питомца -->
+            <div class="pet-name-field">
+              <label for="petNameInput" data-i18n="demo.nameLabel">Name your companion</label>
+              <input type="text" id="petNameInput" maxlength="20" data-i18n-placeholder="demo.namePlaceholder" data-i18n-aria="demo.nameLabel">
+            </div>
+            <button type="button" class="change-pet-link" id="changePetLink" data-i18n="demo.changePet">change pet</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S4. How it works -->
+    <section class="section" id="how">
+      <h2 data-i18n="how.title">How it works</h2>
+      <div class="how-grid">
+        <div class="how-card">
+          <span class="step-num">1</span>
+          <h3 data-i18n="how.s1.title">Connect your wearable</h3>
+          <p data-i18n="how.s1.text">Oura, Whoop or Apple Watch.</p>
+        </div>
+        <div class="how-card">
+          <span class="step-num">2</span>
+          <h3 data-i18n="how.s2.title">We read your recovery</h3>
+          <p data-i18n="how.s2.text">Sleep, HRV and readiness.</p>
+        </div>
+        <div class="how-card">
+          <span class="step-num">3</span>
+          <h3 data-i18n="how.s3.title">Your pet mirrors you</h3>
+          <p data-i18n="how.s3.text">Well recovered — it glows.</p>
+        </div>
+      </div>
+      <p class="tone-line" data-i18n="how.tone">It's never about doing more. It's about noticing when you've run yourself down.</p>
+    </section>
+
+    <!-- S5. Фейк-дор -->
+    <section class="section" id="connect">
+      <h2 data-i18n="connect.title">Works with your device</h2>
+      <p class="section-sub" data-i18n="connect.subtitle">Pick yours.</p>
+      <div class="device-row">
+        <button type="button" class="device-btn" data-device="oura">Oura</button>
+        <button type="button" class="device-btn" data-device="whoop">Whoop</button>
+        <button type="button" class="device-btn" data-device="apple_watch">Apple Watch</button>
+      </div>
+      <p class="garmin-note" data-i18n="connect.garmin">Garmin — coming later</p>
+    </section>
+
+    <!-- S6. CTA -->
+    <section class="section cta-section" id="cta">
+      <div class="cta-card">
+        <h2 data-i18n="cta.title">Get early access</h2>
+        <p class="section-sub" style="margin: 0 auto;" data-i18n="cta.subtitle">A pet that worries about your rest, not your step count.</p>
+        <form class="email-form" id="ctaEmailForm">
+          <input type="email" required data-i18n-placeholder="forms.emailPlaceholder" data-i18n-aria="forms.emailAria" placeholder="you@email.com">
+          <button type="submit" class="btn btn-primary" data-i18n="hero.getAccess">Get early access</button>
+        </form>
+        <p class="form-success" id="ctaSuccess" data-i18n="cta.success">You're in. We'll write when your pet is ready.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- S7. Footer -->
+  <footer class="site-footer">
+    <p data-i18n="footer.about">Restling is a tiny companion whose wellbeing follows your recovery.</p>
+    <p class="disclaimer" data-i18n="footer.disclaimer">Not a medical device.</p>
+    <p><a href="mailto:hello@example.com" data-i18n="footer.contact">Contact us</a></p>
+    <div class="lang-switch" role="group" data-i18n-aria="header.langAria">
+      <button type="button" data-lang="en" class="is-active">EN</button>
+      <button type="button" data-lang="ru">RU</button>
+    </div>
+  </footer>
+
+  <!-- Модалка фейк-дора -->
+  <div class="modal-backdrop" id="connectModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button type="button" class="modal-close" id="modalClose" data-i18n-aria="connect.close">✕</button>
+      <div class="modal-pet" id="modalPet" aria-hidden="true"></div>
+      <h3 id="modalTitle" data-i18n="connect.modalTitle">We're building this right now</h3>
+      <p class="section-sub" style="margin: 0 auto;" data-i18n="connect.modalText">Leave your email — you'll be first to connect.</p>
+      <form class="email-form" id="modalEmailForm">
+        <input type="email" required data-i18n-placeholder="forms.emailPlaceholder" data-i18n-aria="forms.emailAria" placeholder="you@email.com">
+        <button type="submit" class="btn btn-primary" data-i18n="forms.submit">Send</button>
+      </form>
+      <p class="form-success" id="modalSuccess" data-i18n="connect.success">You're on the list.</p>
+    </div>
+  </div>
+
+  <!-- Скрипты: порядок важен. app.js определяет window.registerPet ДО модулей питомцев. -->
+  <script src="assets/config.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/pets.js"></script>
+  <script src="assets/app.js"></script>
+  <!-- Модули питомцев (см. assets/pets/CONTRACT.md). Пока файла нет — работает fallback. -->
+  <script src="assets/pets/mochi.js"></script>
+  <script src="assets/pets/lumi.js"></script>
+  <script src="assets/pets/fern.js"></script>
+  <script src="assets/pets/juno.js"></script>
+  <script src="assets/pets/nimbus.js"></script>
+</body>
+</html>
