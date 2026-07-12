@@ -14,11 +14,11 @@ window.RP_I18N = {
     "choose.title": "Choose your companion",
     "choose.subtitle": "One little creature to live alongside your mornings. You can change your mind anytime.",
 
-    "pet.mochi.character": "Soft, round, and very serious about naps",
-    "pet.lumi.character": "Gentle water spirit — her gills glow when you're rested",
-    "pet.fern.character": "A sloth who's been telling you to slow down all along",
-    "pet.juno.character": "A tiny owl who takes rest very seriously",
-    "pet.nimbus.character": "A cloud-sheep — your morning weather, made of fluff",
+    "pet.cat.character": "A cream tabby cat who takes her naps very seriously",
+    "pet.capybara.character": "A capybara soaking in a warm spring — calm is her superpower",
+    "pet.rabbit.character": "A bashful little bunny — her ears show how rested you are",
+    "pet.sloth.character": "A sloth who's been telling you to slow down all along",
+    "pet.otter.character": "A sea otter floating on her back, favorite pebble on her chest",
 
     "demo.title": "This morning, together",
     "demo.subtitle": "Move the sliders to your real morning numbers — watch how {name} feels.",
@@ -106,11 +106,11 @@ window.RP_I18N = {
     "choose.title": "Выбери своего компаньона",
     "choose.subtitle": "Одно маленькое существо рядом с твоими утрами. Передумать можно в любой момент.",
 
-    "pet.mochi.character": "Мягкий, круглый и очень серьёзно относится к дрёме",
-    "pet.lumi.character": "Нежный водяной дух — её жабры светятся, когда ты отдохнула",
-    "pet.fern.character": "Ленивец, который всегда говорил тебе не торопиться",
-    "pet.juno.character": "Маленькая сова, которая очень серьёзно относится к отдыху",
-    "pet.nimbus.character": "Облачная овечка — погода твоего утра, из чистого пуха",
+    "pet.cat.character": "Кремовая табби-кошка, которая очень серьёзно относится к дрёме",
+    "pet.capybara.character": "Капибара в тёплом источнике — спокойствие её суперсила",
+    "pet.rabbit.character": "Застенчивый кролик — по её ушам видно, как ты отдохнула",
+    "pet.sloth.character": "Ленивец, который всегда говорил тебе не торопиться",
+    "pet.otter.character": "Морская выдра дрейфует на спине с любимым камешком на груди",
 
     "demo.title": "Это утро — вдвоём",
     "demo.subtitle": "Поставь слайдеры на свои реальные утренние цифры — и посмотри, как чувствует себя {name}.",

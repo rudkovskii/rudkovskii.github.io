@@ -4,9 +4,9 @@
 
 ```js
 window.registerPet({
-  id: "mochi",              // строго один из списка ниже
-  nameEn: "Mochi",
-  nameRu: "Мочи",
+  id: "cat",                // строго один из списка ниже
+  nameEn: "Mila",
+  nameRu: "Мила",
   render: function (mood) { // mood — строго одно из 4 значений ниже
     return "<svg ...>...</svg>"; // строка с ОДНИМ анимированным inline-SVG
   }
@@ -20,11 +20,11 @@ window.registerPet({
 
 | id | Файл | Имя EN / RU | Существо |
 |---|---|---|---|
-| `mochi`  | `assets/pets/mochi.js`  | Mochi / Мочи   | круглый кот-булочка (предвыбран) |
-| `lumi`   | `assets/pets/lumi.js`   | Lumi / Люми    | розовый аксолотль |
-| `fern`   | `assets/pets/fern.js`   | Fern / Ферн    | ленивец с листиком |
-| `juno`   | `assets/pets/juno.js`   | Juno / Джуно   | сова-йог |
-| `nimbus` | `assets/pets/nimbus.js` | Nimbus / Нимбус| облачная овечка |
+| `cat`      | `assets/pets/cat.js`      | Mila / Мила     | кремово-персиковая табби-кошка (предвыбрана) |
+| `capybara` | `assets/pets/capybara.js` | Yuzu / Юдзу     | капибара в тёплом источнике |
+| `rabbit`   | `assets/pets/rabbit.js`   | Clover / Кловер | пастельный кролик |
+| `sloth`    | `assets/pets/sloth.js`    | Fern / Ферн     | ленивец на ветке |
+| `otter`    | `assets/pets/otter.js`    | Pebble / Пеббл  | морская выдра на спине |
 
 ## Mood-значения (точный список из ТЗ, раздел 4)
 
@@ -48,7 +48,7 @@ window.registerPet({
 2. **viewBox фиксированный: `viewBox="0 0 240 240"`.** Атрибуты `width`/`height`
    НЕ ставить — масштабирует CSS страницы. Питомец центрирован, «земля» ~ y=200.
 3. **Корневой класс обязателен:** `class="pet-svg pet-<id> is-<mood>"`,
-   например `class="pet-svg pet-mochi is-tired"`.
+   например `class="pet-svg pet-cat is-tired"`.
 4. **Все анимации — внутри SVG**: либо CSS `@keyframes` в `<style>` внутри SVG,
    либо SMIL (`<animate>`, `<animateTransform>`). Без внешних зависимостей,
    без JS, без внешних url(), без картинок. Idle-дыхание обязательно во всех
@@ -58,9 +58,9 @@ window.registerPet({
    сцена, hero, карточки):**
    - каждый CSS-селектор в `<style>` начинается с `.pet-<id>` (лучше
      `.pet-<id>.is-<mood>`), чтобы стили не текли между питомцами;
-   - имена `@keyframes` — с префиксом id: `mochi-breathe`, `lumi-gill-sway`;
+   - имена `@keyframes` — с префиксом id: `cat-breathe`, `otter-float`;
    - атрибуты `id=` внутри SVG (градиенты, маски) — с префиксом id и mood:
-     `id="mochi-radiant-glow"`. Лучше вообще без id, где можно.
+     `id="cat-radiant-glow"`. Лучше вообще без id, где можно.
 6. **`prefers-reduced-motion`:** внутри `<style>` SVG обязателен блок
    `@media (prefers-reduced-motion: reduce) { ... animation: none ... }`.
    Статичные позы 4 mood должны различаться и без движения (поза + веки + аура).
