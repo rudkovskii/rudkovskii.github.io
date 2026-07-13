@@ -120,7 +120,8 @@
             <div class="style-switch-field">
               <span class="style-switch-label" data-i18n="demo.styleLabel">Art style</span>
               <div class="style-switch" id="styleSwitch" role="group" data-i18n-aria="demo.styleAria">
-                <button type="button" data-style="soft" class="is-active" aria-pressed="true" data-i18n="style.soft">Soft</button>
+                <button type="button" data-style="sticker" class="is-active" aria-pressed="true" data-i18n="style.sticker">Sticker</button>
+                <button type="button" data-style="soft" aria-pressed="false" data-i18n="style.soft">Soft</button>
                 <button type="button" data-style="pixel" aria-pressed="false" data-i18n="style.pixel">Pixel</button>
                 <button type="button" data-style="cartoon" aria-pressed="false" data-i18n="style.cartoon">Cartoon</button>
                 <button type="button" data-style="real" aria-pressed="false" data-i18n="style.real">Real</button>
@@ -212,28 +213,28 @@
   <script src="assets/i18n.js"></script>
   <script src="assets/pets.js"></script>
   <script src="assets/app.js"></script>
-  <!-- Модули питомцев (см. assets/pets/CONTRACT.md). Пока файла нет — работает fallback. -->
+  <!-- Базовые модули питомцев (registerPet). Для новых животных (dog/wolf/ostrich)
+       базовый модуль = sticker-арт; для cat/capybara/rabbit — soft. См. CONTRACT.md.
+       Порядок = порядок в сетке выбора. -->
   <script src="assets/pets/cat.js"></script>
-  <script src="assets/pets/capybara.js"></script>
+  <script src="assets/pets/dog.js"></script>
   <script src="assets/pets/rabbit.js"></script>
-  <script src="assets/pets/sloth.js"></script>
-  <script src="assets/pets/otter.js"></script>
-  <!-- Стилевые модули <id>.<style>.js (CONTRACT.md v2) — строго ПОСЛЕ базовых.
-       Файлов может ещё не быть: 404 безопасен, app.js делает fallback на soft. -->
+  <script src="assets/pets/capybara.js"></script>
+  <script src="assets/pets/wolf.js"></script>
+  <script src="assets/pets/ostrich.js"></script>
+  <!-- Стилевые модули <id>.<style>.js (registerPetStyle) — строго ПОСЛЕ базовых.
+       cat/capybara/rabbit есть в sticker+pixel+cartoon+real; dog/wolf/ostrich — только базовый sticker. -->
+  <script src="assets/pets/cat.sticker.js"></script>
   <script src="assets/pets/cat.pixel.js"></script>
   <script src="assets/pets/cat.cartoon.js"></script>
   <script src="assets/pets/cat.real.js"></script>
+  <script src="assets/pets/capybara.sticker.js"></script>
   <script src="assets/pets/capybara.pixel.js"></script>
   <script src="assets/pets/capybara.cartoon.js"></script>
   <script src="assets/pets/capybara.real.js"></script>
+  <script src="assets/pets/rabbit.sticker.js"></script>
   <script src="assets/pets/rabbit.pixel.js"></script>
   <script src="assets/pets/rabbit.cartoon.js"></script>
   <script src="assets/pets/rabbit.real.js"></script>
-  <script src="assets/pets/sloth.pixel.js"></script>
-  <script src="assets/pets/sloth.cartoon.js"></script>
-  <script src="assets/pets/sloth.real.js"></script>
-  <script src="assets/pets/otter.pixel.js"></script>
-  <script src="assets/pets/otter.cartoon.js"></script>
-  <script src="assets/pets/otter.real.js"></script>
 </body>
 </html>

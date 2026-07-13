@@ -33,11 +33,15 @@
   ];
   var MOODS = ['radiant', 'steady', 'tired', 'drained'];
 
-  // Арт-стили питомцев (docs/05, раздел «Арт-стили: ресерч и решение»).
-  // Порядок массива = порядок кнопок в UI. 'soft' — базовые модули <id>.js,
-  // остальные — стилевые модули <id>.<style>.js (см. assets/pets/CONTRACT.md v2).
-  var STYLES = ['soft', 'pixel', 'cartoon', 'real'];
-  var STYLE_DEFAULT = 'soft';
+  // Арт-стили питомцев (docs/05 + sticker-пак). Порядок массива = порядок кнопок в UI.
+  // STYLE_BASE ('soft') — базовые модули <id>.js (и общий fallback для любого стиля);
+  // остальные стили — модули <id>.<style>.js (см. assets/pets/CONTRACT.md v2).
+  // STYLE_DEFAULT ('sticker') — стиль, который грузится первым у нового посетителя.
+  // Новые животные (dog/wolf/ostrich) поставляют sticker-арт как свой базовый модуль,
+  // поэтому выглядят одинаково в любом стиле; cat/capybara/rabbit имеют все 5 стилей.
+  var STYLES = ['sticker', 'soft', 'pixel', 'cartoon', 'real'];
+  var STYLE_BASE = 'soft';
+  var STYLE_DEFAULT = 'sticker';
 
   // Дефолты слайдеров = «отличный день», recovery 84 → radiant (ТЗ 3)
   var DEFAULTS = { sleep: 7.5, hrv: 65, readiness: 88 };
@@ -264,7 +268,7 @@
   function petSvg(id, mood, style) {
     style = style || state.style;
     var out = null;
-    if (style !== STYLE_DEFAULT) {
+    if (style !== STYLE_BASE) {
       var styles = styleRegistry[id];
       out = tryRender(styles && styles[style], id + '.' + style, mood);
     }
@@ -320,7 +324,7 @@
       try { console.warn('registerPetStyle: invalid definition', def); } catch (e) {}
       return;
     }
-    if (def.style === STYLE_DEFAULT || STYLES.indexOf(def.style) === -1) {
+    if (def.style === STYLE_BASE || STYLES.indexOf(def.style) === -1) {
       try { console.warn('registerPetStyle: unknown style "' + def.style + '" (soft регистрируется через registerPet)'); } catch (e) {}
       return;
     }

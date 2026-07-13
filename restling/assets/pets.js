@@ -1,18 +1,18 @@
-/* pets.js — конфиг 5 питомцев (порядок = pet1…pet5).
-   Графика живёт в assets/pets/<id>.js (см. assets/pets/CONTRACT.md).
-   Здесь — метаданные и фолбэк-цвета, пока модуль питомца не зарегистрирован. */
+/* pets.js — конфиг 6 питомцев (порядок = pet1…pet6): кот, пёс, заяц, капибара, волк, страус.
+   Графика живёт в assets/pets/<id>.js (базовый/sticker) и <id>.<style>.js (доп. стили),
+   см. assets/pets/CONTRACT.md. Здесь — метаданные и фолбэк-цвета (blob/аватарка). */
 window.RP_PETS = [
   {
-    id: "cat",              // pet1 — предвыбрана. Мила, кремово-персиковая табби-кошка
+    id: "cat",              // pet1 — предвыбрана. Мила, рыжая табби-кошка
     nameEn: "Mila", nameRu: "Мила",
-    color: "#F6D8B8", colorDeep: "#E8B48C",   // фолбэк-blob и аватарка
+    color: "#E6A45C", colorDeep: "#C9803B",
     characterKey: "pet.cat.character"
   },
   {
-    id: "capybara",         // pet2 — Юдзу, капибара в тёплом источнике
-    nameEn: "Yuzu", nameRu: "Юдзу",
-    color: "#C89B6C", colorDeep: "#A97F52",
-    characterKey: "pet.capybara.character"
+    id: "dog",              // pet2 — Бисквит, золотистый вислоухий щенок
+    nameEn: "Biscuit", nameRu: "Бисквит",
+    color: "#E7B26B", colorDeep: "#D2954A",
+    characterKey: "pet.dog.character"
   },
   {
     id: "rabbit",           // pet3 — Кловер, пастельный кролик
@@ -21,15 +21,21 @@ window.RP_PETS = [
     characterKey: "pet.rabbit.character"
   },
   {
-    id: "sloth",            // pet4 — Ферн, ленивец на ветке
-    nameEn: "Fern", nameRu: "Ферн",
-    color: "#B8B29A", colorDeep: "#8A7E6C",
-    characterKey: "pet.sloth.character"
+    id: "capybara",         // pet4 — Юдзу, капибара-«батон»
+    nameEn: "Yuzu", nameRu: "Юдзу",
+    color: "#C89B6C", colorDeep: "#A97F52",
+    characterKey: "pet.capybara.character"
   },
   {
-    id: "otter",            // pet5 — Пеббл, морская выдра на спине
-    nameEn: "Pebble", nameRu: "Пеббл",
-    color: "#8A6248", colorDeep: "#75513B",
-    characterKey: "pet.otter.character"
+    id: "wolf",             // pet5 — Уиллоу, мягкий серый волк
+    nameEn: "Willow", nameRu: "Уиллоу",
+    color: "#AEB4BE", colorDeep: "#8C929C",
+    characterKey: "pet.wolf.character"
+  },
+  {
+    id: "ostrich",          // pet6 — Поппи, пушистый страус
+    nameEn: "Poppy", nameRu: "Поппи",
+    color: "#E9CBA5", colorDeep: "#D3AE82",
+    characterKey: "pet.ostrich.character"
   }
 ];
