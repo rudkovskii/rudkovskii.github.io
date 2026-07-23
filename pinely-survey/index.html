@@ -169,7 +169,12 @@ const SCORING_CONFIG = {
 
 // Диагностические вопросы.
 //
-// ДВА ПРАВИЛА, КОТОРЫЕ НЕЛЬЗЯ ЛОМАТЬ ПРИ ПРАВКЕ:
+// ТРИ ПРАВИЛА, КОТОРЫЕ НЕЛЬЗЯ ЛОМАТЬ ПРИ ПРАВКЕ:
+//
+// 0. Сценарий вопроса должен быть узнаваем в ЛЮБОЙ команде. Зарплатная таблица —
+//    это HR и финансы, договор — это Legal: на таком вопросе остальные отвечают
+//    про воображаемую чужую работу, и замер разваливается. Формулируй через то,
+//    что есть у всех: файл с внутренними деталями, сорванный срок, чужой драфт.
 //
 // 1. Порядок вариантов намеренно НЕ по возрастанию балла, и самый дорогой вариант
 //    стоит в разных вопросах на разных позициях (4-й, 2-й, 3-й, 3-й, 4-й, 4-й).
@@ -196,21 +201,21 @@ const QUESTIONS = [
   },
   {
     id: 'a2',
-    title: 'A vendor has missed delivery deadlines for the second month and you need to write to them. What would you send to AI?',
+    title: 'Something you were promised has slipped for the second time, and you have to write to the person responsible. What would you send to AI?',
     hint: 'Pick the request you would actually type.',
     options: [
-      { t: 'Write a professional, well-structured and persuasive email to a vendor regarding the ongoing situation with delivery delays.', score: 2 },
+      { t: 'Write a professional, well-structured and persuasive message about the ongoing situation with the delays.', score: 2 },
       { t: 'I would open the message I sent the last time this happened and change the details.', score: 5 },
-      { t: 'Write an email to a vendor about missed deadlines.', score: 1 },
-      { t: 'You are an office manager. Second month of missed delivery deadlines, we want to keep working with them but need a committed date. Business tone, firm and polite, under 150 words.', score: 4 }
+      { t: 'Write an email about a missed deadline.', score: 1 },
+      { t: 'I am writing on behalf of my team. Second time this date has slipped, we want to keep working together and need a date they will commit to. Business tone, firm and polite, under 150 words.', score: 4 }
     ]
   },
   {
     id: 'a3',
-    title: 'AI has produced a text or a calculation that goes straight into a work document. What happens before you use it?',
+    title: 'AI has produced something that goes straight into your work: a text, a set of numbers, a summary. What happens before you use it?',
     hint: 'By checking we mean comparing what came back against something you trust.',
     options: [
-      { t: 'I compare figures, names and any legal wording against the source they came from. Wording and structure I just edit.', score: 4 },
+      { t: 'I compare names, dates, figures and anything binding against the source they came from. Wording and structure I just edit.', score: 4 },
       { t: 'If it reads convincingly, it goes in.', score: 1 },
       { t: 'I already know which parts of this kind of output tend to be wrong, and those are the parts I look at.', score: 5 },
       { t: 'I ask it to review its own answer and point out anything it is unsure about.', score: 2 },
@@ -231,14 +236,14 @@ const QUESTIONS = [
   },
   {
     id: 'a5',
-    title: 'You need to analyze a spreadsheet of the team’s salary data before writing a report. What would you do?',
+    title: 'You want help with a work file that carries internal detail: people’s names, internal figures, wording from an agreement. What would you do?',
     options: [
       { t: 'I have not really thought about where a file like that can go.', score: 1 },
-      { t: 'I rebuild the question on made-up numbers of the same shape and apply the answer myself.', score: 3 },
-      { t: 'Upload it and ask for the analysis. It stays inside my own chat.', score: 0 },
-      { t: 'I check what our rules allow for a file like this before I do anything with it.', score: 5 },
-      { t: 'Paste the numbers in without the column of names.', score: 1 },
-      { t: 'I would keep AI out of this one entirely.', score: 1 }
+      { t: 'I rebuild the question on made-up detail of the same shape and apply the answer to the real thing myself.', score: 3 },
+      { t: 'Upload it and ask. It stays inside my own chat.', score: 0 },
+      { t: 'I check what our rules allow for this kind of file before I do anything with it.', score: 5 },
+      { t: 'Take out the names and send the rest.', score: 1 },
+      { t: 'I keep AI away from anything internal.', score: 1 }
     ]
   },
   {
