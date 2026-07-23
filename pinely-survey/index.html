@@ -176,8 +176,14 @@ const SCORING_CONFIG = {
 //    что есть у всех: файл с внутренними деталями, сорванный срок, чужой драфт.
 //
 // 1. Порядок вариантов намеренно НЕ по возрастанию балла, и самый дорогой вариант
-//    стоит в разных вопросах на разных позициях (4-й, 2-й, 3-й, 3-й, 4-й, 4-й).
-//    Если отсортировать варианты «по-человечески», анкета превратится в самооценку.
+//    стоит в разных вопросах на разных позициях. Если отсортировать варианты
+//    «по-человечески», анкета превратится в самооценку.
+//
+//    ДВА ИСКЛЮЧЕНИЯ — a0 и a1. Это вопросы про себя, а не ситуации: у них
+//    варианты лежат на одной шкале, и спрятанная шкала делает вопрос
+//    нечитаемым («не понял, про что это»). Там порядок естественный, и человек
+//    прямо выбирает своё место. Разделительную работу тянут ситуационные
+//    вопросы a2, a3, a5 — вот их сортировать нельзя ни в коем случае.
 //
 // 2. Дорогой вариант не должен выглядеть дорого. «Возьму прошлую версию и поменяю
 //    детали» звучит лениво, а стоит 5. Длинный промпт из общих слов звучит солидно,
@@ -207,16 +213,19 @@ const QUESTIONS = [
   {
     id: 'a1',
     paths: ['full'],
-    // Частоту уже спросили в a0, поэтому здесь меряется глубина встроенности.
+    // Частоту уже спросили в a0, здесь меряется, как далеко AI прошёл внутрь работы:
+    // остаётся при человеке -> попадает в то, что уходит другим -> закрепляется
+    // в повторяющихся задачах -> расходится на коллег. Шкала одна и видна, иначе
+    // варианты читаются как четыре несравнимых события (так и было в первой версии).
     // Вариантов «ничего не было» и «открыл пару раз» тут нет намеренно: человек,
     // который двумя экранами раньше сказал «регулярно», не может их выбрать честно.
-    title: 'Over the past month, which of these actually happened in your work?',
-    hint: 'If several are true, pick the one that happened most often.',
+    title: 'How far has AI got into your work?',
+    hint: 'More than one may be true. Pick the one that goes furthest.',
     options: [
-      { t: 'I reused a request I had written earlier instead of composing a new one.', score: 4 },
-      { t: 'One-off asks only. Nothing that repeats from week to week.', score: 2 },
-      { t: 'A colleague used a request or a step that I had set up.', score: 5 },
-      { t: 'Something I sent out started as an AI draft that I then reworked.', score: 3 }
+      { t: 'I ask it things now and then, and whatever comes back stays with me.', score: 2 },
+      { t: 'Work that goes to other people sometimes starts as an AI draft.', score: 3 },
+      { t: 'A few of my recurring tasks now go through it the same way every time.', score: 4 },
+      { t: 'Other people use something I set up with AI.', score: 5 }
     ]
   },
   {
