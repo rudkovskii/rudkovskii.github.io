@@ -121,9 +121,8 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;font-si
    ========================================================================== */
 
 const CONFIG = {
-  // false — повторное прохождение запрещено (после отправки показывается заглушка).
-  // Поставь true, если нужно дать людям пройти заново.
-  ALLOW_RETAKE: false,
+  // Блокировки повторного прохождения нет: анкету можно пройти сколько угодно раз.
+  // На экране результата есть кнопка «Take the survey again».
 
   // Список команд в выпадающем списке. Вариант Other добавляется автоматически.
   TEAMS: ['Finance', 'HR', 'Legal Compliance & Tax', 'Market Setup Operations', 'Regional Directors'],
@@ -361,7 +360,6 @@ const SANDBOX_CHECKS = [
 // порядка вариантов старый сохранённый прогресс означал бы уже другие ответы.
 // Меняешь порядок или состав вариантов — подними v3 на v4.
 const STORAGE_KEY = 'pinely_ai_survey_progress_v4';
-const DONE_KEY = 'pinely_ai_survey_done_v4';
 
 const app = document.getElementById('app');
 const progressEl = document.getElementById('progress');
@@ -403,11 +401,15 @@ function load() {
     if (raw) state = Object.assign(state, JSON.parse(raw));
   } catch (e) {}
 }
-function isDone() {
-  try { return localStorage.getItem(DONE_KEY) === '1'; } catch (e) { return false; }
-}
-function markDone() {
-  try { localStorage.setItem(DONE_KEY, '1'); } catch (e) {}
+// Полный сброс: используется кнопкой «пройти заново» на экране результата.
+function resetSurvey() {
+  state = {
+    answers: {}, team: '', teamOther: '', tasks: [], tasksNone: false, order: null,
+    pain: '', sandbox: '', blockers: [], blockerOther: '', interests: [],
+    hackathon: '', startedAt: null, screen: 0
+  };
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  render();
 }
 
 function q(id) { return QUESTIONS.filter(function (x) { return x.id === id; })[0]; }
@@ -1014,7 +1016,9 @@ function renderResult() {
     '<div id="copyStatus" class="muted" style="margin-top:10px" role="status"></div>' +
     '<div id="lineWrap" hidden style="margin-top:16px">' +
     '<p class="muted">Click the box to select everything, then copy it manually.</p>' +
-    '<textarea class="payload" id="payloadBox" readonly>' + esc(payload) + '</textarea></div>';
+    '<textarea class="payload" id="payloadBox" readonly>' + esc(payload) + '</textarea></div>' +
+    '<div id="retakeWrap" style="margin-top:44px;border-top:1px solid var(--line);padding-top:22px">' +
+    '<button class="btn-ghost" id="retakeBtn">Take the survey again</button></div>';
 
   const status = document.getElementById('copyStatus');
   const lineWrap = document.getElementById('lineWrap');
@@ -1025,14 +1029,24 @@ function renderResult() {
     copyText(payload, function (ok) {
       if (ok) {
         status.textContent = 'Copied. ' + CONFIG.DELIVERY;
-        markDone();
-        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
       } else {
         status.textContent = 'Copying was blocked by the browser. Use the box below.';
         lineWrap.hidden = false;
         box.select();
       }
     });
+  };
+
+  // Сброс в два клика: с одного его слишком легко нажать, не скопировав строку.
+  const retakeWrap = document.getElementById('retakeWrap');
+  document.getElementById('retakeBtn').onclick = function () {
+    retakeWrap.innerHTML =
+      '<p class="muted" id="retakeAsk" role="status">Starting again clears your answers. Copy your result first if you have not sent it.</p>' +
+      '<div class="nav" style="margin-top:0"><button class="btn-ghost" id="retakeYes">Start again</button>' +
+      '<button class="btn-ghost" id="retakeNo">Keep my result</button></div>';
+    document.getElementById('retakeYes').focus();
+    document.getElementById('retakeYes').onclick = resetSurvey;
+    document.getElementById('retakeNo').onclick = function () { renderResult(); };
   };
 }
 
@@ -1056,23 +1070,10 @@ function fallbackCopy(text) {
     return ok;
   } catch (e) { return false; }
 }
-function renderAlreadyDone() {
-  progressEl.hidden = true;
-  app.innerHTML =
-    mountainSVG(0, false) +
-    '<h1>You have already completed this survey<span class="dot">.</span></h1>' +
-    '<p class="lead">If you need to take it again, ping Dmitrii on Slack.</p>';
-}
-
 /* ---------- старт ---------- */
 
 load();
-if (isDone() && !CONFIG.ALLOW_RETAKE) {
-  renderAlreadyDone();
-} else {
-  if (CONFIG.ALLOW_RETAKE) { try { localStorage.removeItem(DONE_KEY); } catch (e) {} }
-  render();
-}
+render();
 </script>
 </body>
 </html>
