@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%20fill=%22%2334A948%22><circle%20cx=%2216.0%22%20cy=%228%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%226.8%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2225.2%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%222.2%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%226.8%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2225.2%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2229.8%22%20cy=%2226%22%20r=%221.7%22/></svg>">
 <meta name="robots" content="noindex, nofollow">
 <title>AI-readiness survey</title>
 <style>
@@ -29,7 +30,11 @@ body{
 .progress{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:14px}
 .progress-track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
 .progress-fill{height:3px;width:0;background:var(--accent);transition:width .25s ease}
-.progress-label{font-size:13px;color:var(--muted);margin-top:8px;letter-spacing:.02em}
+.progress-row{display:flex;align-items:center;gap:14px;margin-top:6px;padding-bottom:6px}
+.progress-label{font-size:13px;color:var(--muted);letter-spacing:.02em}
+.back-link{background:none;border:0;padding:4px 2px;margin:0;color:var(--muted);font-size:13px;line-height:1.2}
+.back-link:hover{color:var(--ink)}
+.back-link:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
 main{padding-top:36px}
 h1{font-size:34px;line-height:1.15;font-weight:700;margin:0 0 18px}
 h2{font-size:25px;line-height:1.25;font-weight:700;margin:0 0 10px}
@@ -99,7 +104,10 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;font-si
 <div class="wrap">
   <div class="progress" id="progress" hidden>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-label" id="progressLabel"></div>
+    <div class="progress-row">
+      <button type="button" class="back-link" id="progressBack">&#8592; Back</button>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
   </div>
   <main id="app"></main>
   <footer>AI-readiness survey · prepared by Dmitrii Rudkovskii for the Pinely back-office program</footer>
@@ -108,7 +116,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;font-si
 <script>
 /* ==========================================================================
    КОНФИГ — правится без программиста.
-   Меняешь текст в кавычках, даты, список команд, рекомендации и промпты.
+   Меняешь текст в кавычках: список команд, вопросы, варианты, подписи.
    Баллы (score) трогать только вместе с разделом SCORING_CONFIG.
    ========================================================================== */
 
@@ -333,6 +341,15 @@ const app = document.getElementById('app');
 const progressEl = document.getElementById('progress');
 const progressFill = document.getElementById('progressFill');
 const progressLabel = document.getElementById('progressLabel');
+const progressBack = document.getElementById('progressBack');
+
+// Кнопка «назад» в липкой шапке: на длинных вопросах нижняя кнопка уезжает
+// за экран, и без этой человек считает, что вернуться нельзя.
+progressBack.onclick = goBack;
+
+function goBack() {
+  if (state.screen > 0) { state.screen--; render(); }
+}
 
 let state = {
   answers: {},        // a1..a6 -> option index
@@ -590,12 +607,12 @@ function render() {
 }
 
 function nav(nextLabel, canNext, onNext) {
-  const back = state.screen > 1 ? '<button class="btn-ghost" id="backBtn">Back</button>' : '';
+  const back = state.screen > 0 ? '<button class="btn-ghost" id="backBtn">Back</button>' : '';
   const html = '<div class="nav">' +
     '<button class="btn" id="nextBtn"' + (canNext ? '' : ' disabled') + '>' + esc(nextLabel) + '</button>' + back + '</div>';
   return { html: html, wire: function () {
     const b = document.getElementById('backBtn');
-    if (b) b.onclick = function () { state.screen--; render(); };
+    if (b) b.onclick = goBack;
     document.getElementById('nextBtn').onclick = function () {
       if (onNext) onNext();
       state.screen++;
