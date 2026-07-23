@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Декодер результатов анкеты</title>
+<style>
+:root{--bg:#fff;--ink:#000;--accent:#34A948;--accent-2:#62C584;--line:#E2E2E2;--muted:#5C5C5C;
+--font:Arial,'Helvetica Neue',Helvetica,sans-serif;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:30px;margin:0 0 8px}
+.dot{color:var(--accent)}
+p{margin:0 0 14px}
+.muted{color:var(--muted);font-size:14px}
+textarea{width:100%;min-height:170px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;
+  border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}
+textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.nav{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 24px}
+button{font-family:var(--font);font-size:15px;cursor:pointer}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:100px;padding:11px 26px;font-weight:700}
+.btn:hover{background:var(--accent-2)}
+.btn-ghost{background:transparent;border:1px solid var(--line);border-radius:100px;padding:10px 22px;color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+.stats{display:flex;gap:22px;flex-wrap:wrap;margin:0 0 22px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:12px 18px;min-width:120px}
+.stat b{display:block;font-size:26px;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:1100px}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#FAFAFA;font-size:12px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+td.wide{min-width:220px;white-space:normal}
+.flag{display:inline-block;background:#FDEBEB;color:#A33;border-radius:100px;padding:1px 9px;font-size:11px;margin-right:4px}
+.grp{display:inline-block;border-radius:100px;padding:1px 10px;font-size:12px;border:1px solid var(--line)}
+.grp.Light{background:#F2F2F2}
+.grp.Medium{background:rgba(98,197,132,.22)}
+.grp.Advanced{background:rgba(52,169,72,.28)}
+.err{color:#A33;font-size:14px;margin:8px 0}
+h2{font-size:20px;margin:34px 0 10px}
+ul.freq{list-style:none;padding:0;margin:0;columns:2;font-size:14px}
+ul.freq li{margin:0 0 6px;break-inside:avoid}
+ul.freq b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Декодер результатов анкеты<span class="dot">.</span></h1>
+<p class="muted">Вставь строки, собранные из личных сообщений в Slack — по одной на строку. Пустые строки и лишние пробелы игнорируются. Страница работает офлайн, никуда ничего не отправляет.</p>
+
+<textarea id="input" placeholder="PINELY2-eyJ2IjoyLCJ0cyI6..."></textarea>
+<div class="nav">
+  <button class="btn" id="decodeBtn">Разобрать</button>
+  <button class="btn-ghost" id="csvBtn">Скачать CSV</button>
+  <button class="btn-ghost" id="clearBtn">Очистить</button>
+</div>
+
+<div id="errors"></div>
+<div id="out"></div>
+</div>
+
+<script>
+const PREFIX = 'PINELY2-';
+
+const AXES = ['prompting', 'verification', 'systemic', 'results'];
+const AXIS_LABEL = { prompting: 'Промпт', verification: 'Проверка', systemic: 'Системность', results: 'Результат' };
+const LEVEL_NAMES = ['Skeptic', 'Observer', 'Experimenter', 'Practitioner', 'Integrator', 'Transformer'];
+
+let rows = [];
+
+function groupOf(level) { return level <= 1 ? 'Light' : (level <= 3 ? 'Medium' : 'Advanced'); }
+
+function decodeLine(line) {
+  let s = line.trim();
+  if (!s) return null;
+  if (s.indexOf(PREFIX) === 0) s = s.slice(PREFIX.length);
+  s = s.replace(/[^A-Za-z0-9+/=]/g, '');
+  const json = decodeURIComponent(escape(atob(s)));
+  return JSON.parse(json);
+}
+
+function esc(s) {
+  return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+function shortDate(ts) {
+  if (!ts) return '';
+  return String(ts).slice(0, 16).replace('T', ' ');
+}
+
+function render() {
+  const out = document.getElementById('out');
+  if (!rows.length) { out.innerHTML = ''; return; }
+
+  const byGroup = { Light: 0, Medium: 0, Advanced: 0 };
+  let flagged = 0, hackYes = 0;
+  rows.forEach(function (r) {
+    byGroup[r.group || groupOf(r.level)]++;
+    if (r.flags && (r.flags.safety_gate || r.flags.false_confidence)) flagged++;
+    if (r.hackathon && r.hackathon.indexOf('yes') === 0) hackYes++;
+  });
+
+  const head = ['#', 'Дата', 'Команда', 'Ур.', 'Группа', 'Промпт', 'Проверка', 'Системность', 'Результат',
+    'Флаги', 'Песочница', 'Хакатон', 'Уже с AI', 'Поглотители времени', 'Своя боль', 'Барьеры', 'Интересы', 'Сек.'];
+
+  const body = rows.map(function (r, i) {
+    const ax = r.axes || {};
+    const flags = [];
+    if (r.flags && r.flags.safety_gate) flags.push('<span class="flag">safety gate</span>');
+    if (r.flags && r.flags.false_confidence) flags.push('<span class="flag">false confidence</span>');
+    const g = r.group || groupOf(r.level);
+    return '<tr>' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td>' + esc(shortDate(r.ts)) + '</td>' +
+      '<td>' + esc(r.team) + '</td>' +
+      '<td><b>' + esc(r.level) + '</b> ' + esc(LEVEL_NAMES[r.level] || '') + '</td>' +
+      '<td><span class="grp ' + esc(g) + '">' + esc(g) + '</span></td>' +
+      AXES.map(function (k) { return '<td>' + esc(ax[k]) + '</td>'; }).join('') +
+      '<td>' + (flags.join('') || '') + '</td>' +
+      '<td>' + esc(r.sandbox_score) + ' / 6</td>' +
+      '<td>' + esc(r.hackathon) + '</td>' +
+      '<td class="wide">' + esc((r.tasks_using_ai || []).join(', ')) + '</td>' +
+      '<td class="wide">' + esc((r.time_sinks || []).join(', ')) + '</td>' +
+      '<td class="wide">' + esc(r.own_pain) + '</td>' +
+      '<td class="wide">' + esc((r.blockers || []).join(', ')) + '</td>' +
+      '<td class="wide">' + esc((r.interests || []).join(', ')) + '</td>' +
+      '<td>' + esc(r.duration_sec) + '</td>' +
+      '</tr>';
+  }).join('');
+
+  function freq(field) {
+    const c = {};
+    rows.forEach(function (r) { (r[field] || []).forEach(function (v) { c[v] = (c[v] || 0) + 1; }); });
+    return Object.keys(c).sort(function (a, b) { return c[b] - c[a]; })
+      .map(function (k) { return '<li><b>' + c[k] + '</b> &mdash; ' + esc(k) + '</li>'; }).join('') || '<li class="muted">нет данных</li>';
+  }
+
+  out.innerHTML =
+    '<div class="stats">' +
+    '<div class="stat"><b>' + rows.length + '</b><span>всего ответов</span></div>' +
+    '<div class="stat"><b>' + byGroup.Light + '</b><span>Light (ур. 0–1)</span></div>' +
+    '<div class="stat"><b>' + byGroup.Medium + '</b><span>Medium (ур. 2–3)</span></div>' +
+    '<div class="stat"><b>' + byGroup.Advanced + '</b><span>Advanced (ур. 4–5)</span></div>' +
+    '<div class="stat"><b>' + flagged + '</b><span>с флагами</span></div>' +
+    '<div class="stat"><b>' + hackYes + '</b><span>готовы на хакатон</span></div>' +
+    '</div>' +
+    '<div class="tablewrap"><table><thead><tr>' + head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') +
+    '</tr></thead><tbody>' + body + '</tbody></table></div>' +
+    '<h2>Что съедает время (топ-3 у каждого)</h2><ul class="freq">' + freq('time_sinks') + '</ul>' +
+    '<h2>Где AI уже используют</h2><ul class="freq">' + freq('tasks_using_ai') + '</ul>' +
+    '<h2>Барьеры</h2><ul class="freq">' + freq('blockers') + '</ul>' +
+    '<h2>Интересы для воркшопов</h2><ul class="freq">' + freq('interests') + '</ul>' +
+    '<h2>Задачи, которые люди готовы отдать AI</h2><ul class="freq">' +
+    (rows.filter(function (r) { return r.own_pain; }).map(function (r) {
+      return '<li><b>' + esc(r.team) + '</b> &mdash; ' + esc(r.own_pain) + '</li>';
+    }).join('') || '<li class="muted">нет данных</li>') + '</ul>' +
+    '<h2>Промпты из песочницы</h2><ul class="freq">' +
+    (rows.filter(function (r) { return r.sandbox_prompt; }).map(function (r) {
+      return '<li><b>' + esc(r.team) + ' (' + esc(r.sandbox_score) + '/6)</b> &mdash; ' + esc(r.sandbox_prompt) + '</li>';
+    }).join('') || '<li class="muted">нет данных</li>') + '</ul>';
+}
+
+function toCSV() {
+  const cols = ['n', 'ts', 'team', 'level', 'level_name', 'group',
+    'ax_prompting', 'ax_verification', 'ax_systemic', 'ax_results',
+    'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
+    'safety_gate', 'false_confidence', 'sandbox_score', 'hackathon',
+    'tasks_using_ai', 'time_sinks', 'own_pain', 'sandbox_prompt', 'blockers', 'interests', 'duration_sec'];
+  const lines = [cols.join(',')];
+  rows.forEach(function (r, i) {
+    const a = r.answers || {}, ax = r.axes || {}, f = r.flags || {};
+    const vals = [i + 1, r.ts, r.team, r.level, LEVEL_NAMES[r.level] || '', r.group || groupOf(r.level),
+      ax.prompting, ax.verification, ax.systemic, ax.results,
+      a.a1, a.a2, a.a3, a.a4, a.a5, a.a6,
+      f.safety_gate ? 1 : 0, f.false_confidence ? 1 : 0, r.sandbox_score, r.hackathon,
+      (r.tasks_using_ai || []).join('; '), (r.time_sinks || []).join('; '), r.own_pain, r.sandbox_prompt,
+      (r.blockers || []).join('; '), (r.interests || []).join('; '), r.duration_sec];
+    lines.push(vals.map(function (v) {
+      const s = v === undefined || v === null ? '' : String(v);
+      return /[",\n;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(','));
+  });
+  return '﻿' + lines.join('\n');
+}
+
+document.getElementById('decodeBtn').onclick = function () {
+  const lines = document.getElementById('input').value.split(/\r?\n/);
+  const errs = [];
+  rows = [];
+  lines.forEach(function (line, i) {
+    if (!line.trim()) return;
+    try {
+      const obj = decodeLine(line);
+      if (obj) rows.push(obj);
+    } catch (e) {
+      errs.push('Строка ' + (i + 1) + ' не разобралась: ' + e.message);
+    }
+  });
+  document.getElementById('errors').innerHTML =
+    errs.map(function (e) { return '<p class="err">' + esc(e) + '</p>'; }).join('');
+  render();
+};
+
+document.getElementById('csvBtn').onclick = function () {
+  if (!rows.length) { alert('Сначала нажми «Разобрать».'); return; }
+  const blob = new Blob([toCSV()], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'pinely-ai-survey.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+};
+
+document.getElementById('clearBtn').onclick = function () {
+  document.getElementById('input').value = '';
+  document.getElementById('errors').innerHTML = '';
+  rows = [];
+  render();
+};
+</script>
+</body>
+</html>

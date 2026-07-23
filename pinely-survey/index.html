@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>AI-readiness survey</title>
+<style>
+:root{
+  --bg:#FFFFFF;
+  --ink:#000000;
+  --accent:#34A948;
+  --accent-2:#62C584;
+  --line:#E2E2E2;
+  --muted:#5C5C5C;
+  --font:Arial,'Helvetica Neue',Helvetica,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px 80px}
+.progress{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:14px}
+.progress-track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.progress-fill{height:3px;width:0;background:var(--accent);transition:width .25s ease}
+.progress-label{font-size:13px;color:var(--muted);margin-top:8px;letter-spacing:.02em}
+main{padding-top:36px}
+h1{font-size:34px;line-height:1.15;font-weight:700;margin:0 0 18px}
+h2{font-size:25px;line-height:1.25;font-weight:700;margin:0 0 10px}
+h3{font-size:19px;font-weight:700;margin:28px 0 10px}
+.dot{color:var(--accent)}
+p{margin:0 0 14px}
+.lead{font-size:19px}
+.muted{color:var(--muted);font-size:15px}
+.note{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:22px 0;font-size:15px;color:var(--muted)}
+.note p:last-child{margin-bottom:0}
+.opts{list-style:none;margin:22px 0 0;padding:0}
+.opts li{margin:0 0 10px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--accent-2)}
+.opt input{margin:3px 0 0;width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
+.opt.checked{border-color:var(--accent);background:rgba(52,169,72,.05)}
+.opt:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.opt span{flex:1}
+label.field{display:block;font-weight:700;margin:0 0 8px}
+select,input[type=text],textarea{
+  width:100%;font-family:var(--font);font-size:17px;color:var(--ink);
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;
+}
+select:focus,input[type=text]:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+textarea{min-height:150px;resize:vertical;line-height:1.45}
+.counter{font-size:13px;color:var(--muted);margin-top:6px;text-align:right}
+.nav{display:flex;gap:12px;align-items:center;margin-top:34px;flex-wrap:wrap}
+button{font-family:var(--font);font-size:16px;cursor:pointer}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:100px;padding:13px 30px;font-weight:700}
+.btn:hover{background:var(--accent-2)}
+.btn:disabled{background:#CFCFCF;cursor:not-allowed}
+.btn:focus-visible,.btn-ghost:focus-visible,.rank-btn:focus-visible,.copy-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btn-ghost{background:transparent;border:1px solid var(--line);border-radius:100px;padding:12px 22px;color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+.rank{list-style:none;margin:22px 0 0;padding:0;counter-reset:r}
+.rank li{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 8px;background:#fff}
+.rank li.top{border-color:var(--accent);background:rgba(52,169,72,.05)}
+.rank li.dragging{opacity:.4}
+.rank .num{width:24px;flex:0 0 auto;font-weight:700;color:var(--muted);text-align:center}
+.rank li.top .num{color:var(--accent)}
+.rank .txt{flex:1;cursor:grab}
+.rank-btns{display:flex;gap:6px;flex:0 0 auto}
+.rank-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:100px;background:#fff;line-height:1;font-size:15px}
+.rank-btn:hover{border-color:var(--ink)}
+.result-head{margin-bottom:6px}
+.level-num{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.mountain{width:100%;height:auto;display:block;margin:26px 0 6px}
+.radar-row{display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.radar-row svg{flex:0 0 auto}
+.axes-legend{list-style:none;margin:0;padding:0;font-size:15px;min-width:240px;flex:1}
+.axes-legend li{margin:0 0 10px}
+.axes-legend b{display:block}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0}
+.steps li{counter-increment:s;position:relative;padding-left:38px;margin:0 0 16px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:100px;background:var(--accent);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.prompt-card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 12px}
+.prompt-card h4{margin:0 0 8px;font-size:16px}
+.prompt-card pre{margin:0 0 12px;white-space:pre-wrap;font-family:var(--font);font-size:15px;color:var(--muted);line-height:1.45}
+.copy-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:100px;padding:8px 18px;font-weight:700;font-size:14px}
+.copy-btn:hover{background:var(--accent);color:#fff}
+.check{list-style:none;margin:14px 0;padding:0;font-size:16px}
+.check li{padding-left:26px;position:relative;margin:0 0 8px}
+.check li::before{position:absolute;left:0;top:0}
+.check li.yes::before{content:"+";color:var(--accent);font-weight:700}
+.check li.no::before{content:"-";color:var(--muted);font-weight:700}
+.payload{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
+footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;font-size:13px;color:var(--muted)}
+.hero-bg{margin:0 0 8px}
+@media (max-width:520px){
+  body{font-size:16px}
+  h1{font-size:27px}
+  h2{font-size:21px}
+  .wrap{padding:0 16px 60px}
+  .nav .btn,.nav .btn-ghost{flex:1;text-align:center}
+  .radar-row{gap:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="progress" id="progress" hidden>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+  <main id="app"></main>
+  <footer>AI-readiness survey · prepared by Dmitrii Rudkovskii for the Pinely back-office program</footer>
+</div>
+
+<script>
+/* ==========================================================================
+   КОНФИГ — правится без программиста.
+   Меняешь текст в кавычках, даты, список команд, рекомендации и промпты.
+   Баллы (score) трогать только вместе с разделом SCORING_CONFIG.
+   ========================================================================== */
+
+const CONFIG = {
+  // false — повторное прохождение запрещено (после отправки показывается заглушка).
+  // Поставь true, если нужно дать людям пройти заново.
+  ALLOW_RETAKE: false,
+
+  // Список команд в выпадающем списке. Вариант Other добавляется автоматически.
+  TEAMS: ['Finance', 'HR', 'Legal Compliance & Tax', 'Market Setup Operations', 'Regional Directors'],
+
+  // Даты программы — попадают в экран результата.
+  WORKSHOP_DATES: { w1: 'August 5', w2: 'August 12', w3: 'August 19', hackathon: 'August 26' },
+
+  // Куда человек относит строку с результатом.
+  DELIVERY: 'Send this line to Dmitrii in a direct message on Slack.',
+
+  // Честное время прохождения.
+  DURATION_TEXT: 'about 7 minutes',
+
+  // Префикс строки результата. Меняй, только если поменяешь его же в decode.html.
+  PAYLOAD_PREFIX: 'PINELY2-'
+};
+
+const SCORING_CONFIG = {
+  // Итоговый уровень = медиана баллов диагностических вопросов, округление вниз.
+  // Safety gate: балл по вопросу о данных <= порога — уровень не выше потолка.
+  SAFETY_GATE: { question: 'a5', threshold: 1, cap: 2 },
+  // Ложная продвинутость: верификация ниже остальных на этот разрыв — минус уровень.
+  FALSE_CONFIDENCE: { question: 'a3', gap: 2, penalty: 1 },
+  // Если по частоте использования 0 — уровень 0 независимо от остального.
+  ZERO_USE: { question: 'a1', value: 0 },
+  MAX_LEVEL: 5,
+  // Оси радара: из каких вопросов считается каждая (среднее, округление вниз).
+  // label — подпись в списке под радаром, short — короткая подпись на самом радаре.
+  AXES: {
+    prompting:    { label: 'Prompting',          short: 'Prompting', hint: 'How completely you describe the task', from: ['a2'] },
+    verification: { label: 'Checking results',   short: 'Checking',  hint: 'Whether you verify output before using it', from: ['a3'] },
+    systemic:     { label: 'Habits & templates', short: 'Habits',    hint: 'Whether AI is part of your regular work', from: ['a1', 'a6'] },
+    results:      { label: 'Real outcomes',      short: 'Outcomes',  hint: 'Whether it reliably produces usable work', from: ['a4', 'a5'] }
+  },
+  // Группы обучения. Участнику не показываются, идут только в выгрузку.
+  GROUPS: [{ max: 1, name: 'Light' }, { max: 3, name: 'Medium' }, { max: 5, name: 'Advanced' }]
+};
+
+// Диагностические вопросы. Порядок вариантов зафиксирован и намеренно перемешан.
+// skipIfNoUse: true — вопрос пропускается у тех, кто AI почти не пользуется.
+const QUESTIONS = [
+  {
+    id: 'a1',
+    title: 'How would you describe your use of AI tools for work over the past month?',
+    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar. Pick the closest to the truth, even if it is not an exact match.',
+    options: [
+      { t: 'I use it a few times a week for specific types of tasks, and I know where it helps.', score: 3 },
+      { t: 'I barely use it. Either it does not seem to apply to my work, or I do not know where to start.', score: 0 },
+      { t: 'AI is part of how my team works. I use it myself and I set it up for others.', score: 5 },
+      { t: 'I tried it once or twice, mostly out of curiosity rather than for work.', score: 1 },
+      { t: 'I use it daily, and part of my work is already rebuilt around it: templates, repeatable steps.', score: 4 }
+    ]
+  },
+  {
+    id: 'a2',
+    title: 'You need to write an email to a vendor who has been missing deadlines for the second month. What would you send to AI?',
+    hint: 'Pick the request you would actually type.',
+    options: [
+      { t: 'Write an email to a vendor about missed deadlines.', score: 1 },
+      { t: 'I have a template for emails like this. I would reuse it and fill in the details.', score: 5 },
+      { t: 'Draft a formal complaint to a supplier listing the breached obligations.', score: 2 },
+      { t: 'You are an office manager. Write an email to a vendor: second month of missed delivery deadlines, we want to keep the relationship but need a firm date. Business tone, firm but polite, under 150 words.', score: 4 }
+    ]
+  },
+  {
+    id: 'a3',
+    title: 'AI has given you a finished text or calculation that goes straight into a work document. What do you usually do?',
+    hint: 'Checking the output against a source is what we mean by verification here.',
+    options: [
+      { t: 'I read it through and adjust the wording if something sounds off.', score: 2 },
+      { t: 'I use it as it is. If it reads convincingly, it is probably right.', score: 1 },
+      { t: 'For facts, figures and legal wording I check against the original source. Drafts and ideas I simply edit.', score: 4 },
+      { t: 'I do not use AI for work like this.', score: 0 },
+      { t: 'I have a checklist for each type of task and go through it before anything leaves my hands.', score: 5 }
+    ]
+  },
+  {
+    id: 'a4',
+    skipIfNoUse: true,
+    title: 'You asked AI for something and the result came out weak or off target. What happens next?',
+    options: [
+      { t: 'I rephrase the request two or three times, add context, ask for an example.', score: 3 },
+      { t: 'I close the tab. This task is beyond it.', score: 1 },
+      { t: 'This is rare for me, because I describe the task in enough detail up front.', score: 5 },
+      { t: 'I do the task myself. That is faster than explaining it.', score: 1 }
+    ]
+  },
+  {
+    id: 'a5',
+    title: 'You need to analyze a spreadsheet with the team’s salary data before preparing a report. What would you send to AI?',
+    options: [
+      { t: 'Upload the spreadsheet as it is. That is faster.', score: 0 },
+      { t: 'Remove names and exact figures, describe the task on an anonymized example.', score: 3 },
+      { t: 'I have not thought about it. Probably as it is.', score: 1 },
+      { t: 'We have a policy on what data can go where, and I follow it.', score: 5 },
+      { t: 'I do not use AI for tasks like this.', score: 1 }
+    ]
+  },
+  {
+    id: 'a6',
+    skipIfNoUse: true,
+    title: 'Do you have saved prompts or templates that you reuse?',
+    options: [
+      { t: 'I have written templates for specific tasks.', score: 3 },
+      { t: 'No, I write everything from scratch each time.', score: 1 },
+      { t: 'I keep a library of templates, and some colleagues use them too.', score: 5 },
+      { t: 'A couple of phrasings I keep in my head, nothing written down.', score: 2 }
+    ]
+  }
+];
+
+// Карта задач. id менять нельзя — по ним собирается выгрузка.
+const TASKS = [
+  { id: 'emails',         t: 'Emails and correspondence' },
+  { id: 'documents',      t: 'Drafting and reviewing documents' },
+  { id: 'meeting_notes',  t: 'Meeting notes and summaries' },
+  { id: 'research',       t: 'Finding and cross-checking information' },
+  { id: 'presentations',  t: 'Presentations and reports' },
+  { id: 'spreadsheets',   t: 'Spreadsheets and calculations' },
+  { id: 'scheduling',     t: 'Planning and scheduling' },
+  { id: 'translation',    t: 'Translation and proofreading' },
+  { id: 'templates',      t: 'Routine documents from templates' },
+  { id: 'internal_comms', t: 'Internal announcements and instructions' },
+  { id: 'vendors',        t: 'Vendor and counterparty communication' }
+];
+
+const BLOCKERS = [
+  { id: 'no_start',     t: 'I do not know where to start' },
+  { id: 'data_rules',   t: 'I am afraid of breaking data rules' },
+  { id: 'disappointed', t: 'I tried it and the results disappointed me' },
+  { id: 'no_time',      t: 'I have no time to figure it out' },
+  { id: 'no_fit',       t: 'It does not seem to fit my tasks' },
+  { id: 'go_deeper',    t: 'I am comfortable already and want to go deeper' },
+  { id: 'other',        t: 'Something else', other: true }
+];
+
+const INTERESTS = [
+  { id: 'documents',   t: 'Documents and email' },
+  { id: 'spreadsheets', t: 'Spreadsheets and calculations' },
+  { id: 'meetings',    t: 'Meeting prep and notes' },
+  { id: 'research',    t: 'Research and analysis' },
+  { id: 'templates',   t: 'Templates for recurring tasks' },
+  { id: 'automation',  t: 'Automation through Slack and Google tools' },
+  { id: 'agents',      t: 'Agents and mini-tools', skipIfNoUse: true },
+  { id: 'data_rules',  t: 'How to stay within data rules' }
+];
+
+const HACKATHON = [
+  { id: 'yes_have_case', t: 'Yes, I have one in mind' },
+  { id: 'yes_need_help', t: 'Yes, but I would need help picking one' },
+  { id: 'watching',      t: 'I will watch from the sidelines first' }
+];
+
+// Уровни: название, описание одним предложением, вектор роста.
+const LEVELS = [
+  { name: 'Skeptic',      desc: 'AI has no place in your work yet, or it has not earned your trust.', vector: 'pick one small task and see what it actually does with it.' },
+  { name: 'Observer',     desc: 'You have seen what AI can do and tried it, and it has not entered your working week yet.', vector: 'move one recurring task into it and keep it there for a week.' },
+  { name: 'Experimenter', desc: 'You reach for AI now and then, and the quality of what comes back swings.', vector: 'make the result predictable by describing the task the same way every time.' },
+  { name: 'Practitioner', desc: 'You have tasks where AI reliably helps, you give it context and you check what comes back.', vector: 'turn what already works into templates you can hand to someone else.' },
+  { name: 'Integrator',   desc: 'AI sits inside your workflow through templates and repeatable steps, and your colleagues benefit from it.', vector: 'take one process end to end, with a quality step and a named owner.' },
+  { name: 'Transformer',  desc: 'You rebuild how your team works around AI and you set the standard others follow.', vector: 'write the standard down so it survives without you.' }
+];
+
+// Три следующих шага под каждый уровень. Правь свободно, порядок = приоритет.
+const RECOMMENDATIONS = {
+  0: [
+    'Take one neutral email this week and ask AI to rewrite it in a more polite tone. No names, no figures, no attachments.',
+    'Ask a colleague on your team to show you, on their screen, how they solve one routine task with AI. Fifteen minutes is enough.',
+    'Write down the one task in your week you would most like to stop doing by hand. Bring it to the first workshop.'
+  ],
+  1: [
+    'Pick one weekly task, such as preparing the agenda for a recurring meeting, and run it through AI once this week on an anonymized draft.',
+    'Ask AI for the structure of a report you produce regularly. Only the shape, no real numbers.',
+    'When the answer is not useful, rephrase the request instead of closing the tab. Two extra attempts change most outcomes.'
+  ],
+  2: [
+    'Build one prompt template for a daily task: role, task, format, constraints. Use exactly that template all week.',
+    'Set a rule for yourself: any output containing figures gets at least one key number checked against the source before it moves on.',
+    'Keep the prompts that worked in one file. Five of them are enough to make the next month faster.'
+  ],
+  3: [
+    'Turn your five most repeated tasks into written prompt templates and keep them in one place.',
+    'Give one template to a colleague and watch where they get stuck. That is where the template is still unclear.',
+    'Add a short verification step to each template, naming what has to be checked before the result is used.'
+  ],
+  4: [
+    'Take one team-level task, such as the weekly department report, and turn it into a shared workflow with a template, a quality step and an owner.',
+    'Run a thirty-minute walkthrough of your prompt library with your team, including the part about what data can go where.',
+    'Pick one process where the handover between people is slow and design the AI step that removes the wait.'
+  ],
+  5: [
+    'Write down the standard your team already follows so it holds without you in the room.',
+    'Pick one back-office process outside your own team and map where the same approach would work.',
+    'Bring a real process to the hackathon and use the day to build the version other teams can copy.'
+  ]
+};
+
+// Два готовых промпта под команду. Для Other берётся набор default.
+const PROMPTS_BY_TEAM = {
+  'Finance': [
+    { title: 'Explain a variance before the review', body: 'You are a finance analyst. I will paste an anonymized comparison of budget and actuals for one cost line. List the three most likely explanations for the variance, and for each one name the document or system I should check to confirm it. Mark anything you are inferring rather than reading from the numbers. Under 150 words.' },
+    { title: 'Turn a long thread into a payment decision', body: 'You are a finance analyst. Below is an email thread about an invoice dispute, with names removed. Summarize it as: what was agreed, what is still open, what decision is needed from me, and by when. Five bullet points, plain business English, no speculation. If a date or amount is missing, list it as an open question.' }
+  ],
+  'HR': [
+    { title: 'Draft a policy update people will read', body: 'You are an internal communications specialist. I will give you the bullet points of a policy change. Write an announcement for employees: what changes, from when, what they need to do, who to ask. Neutral and factual tone, under 200 words, no marketing language. Use general wording, no names.' },
+    { title: 'Prepare structured interview questions', body: 'You are an experienced recruiter. For the role described below, write eight interview questions: four on practical skills and four on how the person handles ambiguity. For each question add what a strong answer contains and what a weak one sounds like. Keep the description generic, no candidate data.' }
+  ],
+  'Legal Compliance & Tax': [
+    { title: 'Build a review checklist', body: 'You are a compliance specialist. For the type of document described below, produce a review checklist: what must be present, what is commonly missing, and what should trigger escalation. Describe the document type in general terms only, without pasting its contents. Present it as a numbered list I can reuse.' },
+    { title: 'Rewrite a rule in plain language', body: 'You are a legal writer. Rewrite the requirement below so a colleague without legal background can follow it: what they must do, what they must not do, and who decides in unclear cases. Keep every obligation intact, under 150 words, no legal jargon left unexplained.' }
+  ],
+  'Market Setup Operations': [
+    { title: 'Write a runbook from your own steps', body: 'You are a technical writer. Below are the steps I take for a recurring setup task, written roughly. Turn them into a runbook: prerequisites, numbered steps, what to verify after each step, and what to do if a step fails. Keep system names generic. Flag any step where my description is ambiguous.' },
+    { title: 'Prepare a counterparty request', body: 'You are an operations specialist. Write a message to an external counterparty requesting the configuration details listed below. Structure it as a numbered list of items with a short reason for each, so they can answer point by point. Business tone, under 180 words.' }
+  ],
+  'Regional Directors': [
+    { title: 'Prepare for a decision meeting', body: 'You are a chief of staff. Below is the context of a decision I need to bring to a meeting, in general terms. Produce: the decision in one sentence, the two realistic options, what each one costs, and the three questions the room will ask. One page maximum, no filler.' },
+    { title: 'Turn a week of updates into a summary', body: 'You are a chief of staff. Below are raw notes from a week of team updates, with names removed. Write a summary for leadership: what moved, what is blocked and who is waiting on whom, what needs a decision this week. Ten bullet points maximum, no adjectives, no speculation.' }
+  ],
+  'default': [
+    { title: 'Turn a long thread into a short summary', body: 'You are an experienced assistant. Below is an email thread with names and figures removed. Summarize it for my manager, who has not followed it: what was agreed, what is still open, what is needed from us and by when. Five bullet points, under 120 words. If something is unclear from the thread, list it as an open question instead of guessing.' },
+    { title: 'Make a routine document from a template', body: 'You are an experienced assistant. Below is the template I use for a recurring document and the details for this instance, both generalized. Fill the template, keep its structure exactly, and mark every place where information is missing with [TO CONFIRM] instead of inventing it.' }
+  ]
+};
+
+// Разбор промпта в песочнице: какие признаки ищем и что советуем добавить.
+const SANDBOX_CHECKS = [
+  { id: 'role',        label: 'Role or context for the model', missing: 'Say who the AI is acting as, or what your own role is. It changes the register of the answer.',
+    re: /\b(you are|act as|as an?|i work|i am an?|i'm an?|my role|imagine you)\b/i },
+  { id: 'audience',    label: 'Who the result is for', missing: 'Name the reader. A summary for a manager and a summary for yourself are different documents.',
+    re: /\b(for my (manager|boss|lead|director|team)|for the (team|client|board|management)|for leadership|for a client|for my colleague|audience)\b/i },
+  { id: 'format',      label: 'Format of the result', missing: 'Ask for a shape: bullet points, a table, a short paragraph, a numbered list.',
+    re: /\b(list|table|bullet|bullets|paragraph|points|summary of|format|structure|columns|numbered)\b/i },
+  { id: 'constraints', label: 'Constraints and length', missing: 'Set a limit: word count, tone, what to leave out. Without it you get an average of everything.',
+    re: /(\b(no more than|under|at most|max|maximum|within|brief|short|concise|keep it)\b|\b\d{2,4}\s*(words|characters|sentences|bullets|points|lines)\b)/i },
+  { id: 'example',     label: 'An example or a sample to follow', missing: 'Show one example of what good looks like, or point at a document to imitate.',
+    re: /\b(for example|for instance|like this|here'?s a sample|sample|following this format|similar to|template)\b/i },
+  { id: 'detail',      label: 'Enough detail to act on', missing: 'The request is very short. Add what the source material is and what you will do with the result.',
+    test: function (s) { return s.trim().length >= 40; } }
+];
+
+/* ==========================================================================
+   Конец конфига. Ниже — механика.
+   ========================================================================== */
+
+const STORAGE_KEY = 'pinely_ai_survey_progress_v2';
+const DONE_KEY = 'pinely_ai_survey_done_v2';
+
+const app = document.getElementById('app');
+const progressEl = document.getElementById('progress');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+
+let state = {
+  answers: {},        // a1..a6 -> option index
+  team: '',
+  teamOther: '',
+  tasks: [],
+  tasksNone: false,
+  order: null,        // порядок карточек в вопросе про поглотители времени
+  pain: '',
+  sandbox: '',
+  sandboxDone: false,
+  blockers: [],
+  blockerOther: '',
+  interests: [],
+  hackathon: '',
+  startedAt: null,
+  screen: 0
+};
+
+function save() {
+  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function load() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  } catch (e) {}
+}
+function isDone() {
+  try { return localStorage.getItem(DONE_KEY) === '1'; } catch (e) { return false; }
+}
+function markDone() {
+  try { localStorage.setItem(DONE_KEY, '1'); } catch (e) {}
+}
+
+function q(id) { return QUESTIONS.filter(function (x) { return x.id === id; })[0]; }
+function scoreOf(id) {
+  const idx = state.answers[id];
+  if (idx === undefined || idx === null) return null;
+  return q(id).options[idx].score;
+}
+function noUse() { return scoreOf('a1') === 0; }
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+/* ---------- набор экранов ---------- */
+
+function buildScreens() {
+  const s = [{ type: 'intro' }, { type: 'team' }];
+  QUESTIONS.forEach(function (question) {
+    if (question.skipIfNoUse && noUse()) return;
+    s.push({ type: 'single', q: question });
+  });
+  s.push({ type: 'tasks' });
+  s.push({ type: 'rank' });
+  s.push({ type: 'pain' });
+  s.push({ type: 'sandbox' });
+  s.push({ type: 'expectations' });
+  s.push({ type: 'hackathon' });
+  s.push({ type: 'result' });
+  return s;
+}
+
+/* ---------- скоринг ---------- */
+
+function median(arr) {
+  if (!arr.length) return 0;
+  const a = arr.slice().sort(function (x, y) { return x - y; });
+  const mid = Math.floor(a.length / 2);
+  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+}
+
+function computeResult() {
+  const scores = {};
+  QUESTIONS.forEach(function (question) {
+    const v = scoreOf(question.id);
+    if (v !== null) scores[question.id] = v;
+  });
+  const values = Object.keys(scores).map(function (k) { return scores[k]; });
+  let level = Math.floor(median(values));
+  const flags = { false_confidence: false, safety_gate: false };
+
+  // Ложная продвинутость: верификация заметно ниже остального.
+  const fc = SCORING_CONFIG.FALSE_CONFIDENCE;
+  if (scores[fc.question] !== undefined) {
+    const others = Object.keys(scores)
+      .filter(function (k) { return k !== fc.question; })
+      .map(function (k) { return scores[k]; });
+    if (others.length && median(others) - scores[fc.question] >= fc.gap) {
+      flags.false_confidence = true;
+      level = Math.max(0, level - fc.penalty);
+    }
+  }
+  // Safety gate.
+  const sg = SCORING_CONFIG.SAFETY_GATE;
+  if (scores[sg.question] !== undefined && scores[sg.question] <= sg.threshold) {
+    flags.safety_gate = true;
+    level = Math.min(level, sg.cap);
+  }
+  // Нулевое использование.
+  const zu = SCORING_CONFIG.ZERO_USE;
+  if (scores[zu.question] === zu.value) level = 0;
+
+  level = Math.max(0, Math.min(SCORING_CONFIG.MAX_LEVEL, level));
+
+  const axes = {};
+  Object.keys(SCORING_CONFIG.AXES).forEach(function (key) {
+    const from = SCORING_CONFIG.AXES[key].from.filter(function (id) { return scores[id] !== undefined; });
+    if (!from.length) { axes[key] = 0; return; }
+    const sum = from.reduce(function (acc, id) { return acc + scores[id]; }, 0);
+    axes[key] = Math.floor(sum / from.length);
+  });
+
+  let group = 'Light';
+  for (let i = 0; i < SCORING_CONFIG.GROUPS.length; i++) {
+    if (level <= SCORING_CONFIG.GROUPS[i].max) { group = SCORING_CONFIG.GROUPS[i].name; break; }
+  }
+  return { level: level, flags: flags, axes: axes, scores: scores, group: group };
+}
+
+/* ---------- разбор промпта ---------- */
+
+function analyzeSandbox(text) {
+  const found = {};
+  SANDBOX_CHECKS.forEach(function (c) {
+    found[c.id] = c.test ? !!c.test(text) : c.re.test(text);
+  });
+  const score = Object.keys(found).filter(function (k) { return found[k]; }).length;
+  return { found: found, score: score };
+}
+
+function buildImprovedPrompt(text, found) {
+  const core = (text || '').trim().replace(/\s+/g, ' ') ||
+    'Summarize a long email thread so my manager can act on it.';
+  const lines = [];
+  if (!found.role) lines.push('You are an experienced assistant supporting a back-office team.');
+  lines.push('Task: ' + core);
+  if (!found.audience) lines.push('Audience: my manager, who has not followed the thread.');
+  if (!found.format) lines.push('Format: five bullet points, then one line stating the decision required.');
+  if (!found.constraints) lines.push('Constraints: under 120 words, plain business English, no speculation.');
+  if (!found.example) lines.push('If anything is unclear from the source, list it as an open question instead of filling the gap.');
+  lines.push('Source material: paste the thread here with names, figures and counterparty details removed.');
+  return lines.join('\n');
+}
+
+/* ---------- графика ---------- */
+
+function mountainSVG(level, showMarker) {
+  const W = 620, H = 280, base = 250, step = 11;
+  const ridge = [[0, 250], [70, 218], [140, 176], [205, 132], [258, 88], [310, 40],
+                 [362, 92], [420, 138], [488, 182], [556, 220], [620, 250]];
+  function ridgeY(x) {
+    for (let i = 1; i < ridge.length; i++) {
+      if (x <= ridge[i][0]) {
+        const a = ridge[i - 1], b = ridge[i];
+        const t = (x - a[0]) / (b[0] - a[0]);
+        return a[1] + t * (b[1] - a[1]);
+      }
+    }
+    return base;
+  }
+  let dots = '';
+  for (let x = step / 2; x < W; x += step) {
+    const top = ridgeY(x);
+    for (let y = base; y > top; y -= step) {
+      const depth = (base - y) / (base - 40);
+      const op = (0.5 - depth * 0.32).toFixed(2);
+      const r = (2.3 - depth * 1.0).toFixed(2);
+      dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '" fill="#000" opacity="' + op + '"/>';
+    }
+  }
+  let marker = '';
+  if (showMarker) {
+    const targetY = base - (base - 40) * ((level + 0.6) / 6);
+    let mx = 0, best = 1e9;
+    for (let x = 8; x <= 310; x += 1) {
+      const d = Math.abs(ridgeY(x) - targetY);
+      if (d < best) { best = d; mx = x; }
+    }
+    const my = ridgeY(mx);
+    // Подпись — на белой подложке рядом со склоном, иначе тонет в точках.
+    // Низкие уровни стоят у левого края, там подпись уходит вправо.
+    const left = mx > 150;
+    const ty = my;
+    const tx = left ? mx - 52 : mx + 52;
+    marker =
+      '<text x="' + tx + '" y="' + (ty + 5) + '" text-anchor="' + (left ? 'end' : 'start') +
+      '" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#000"' +
+      ' stroke="#fff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">you are here</text>' +
+      '<line x1="' + (left ? tx + 6 : tx - 6) + '" y1="' + ty + '" x2="' + (left ? mx - 14 : mx + 14) + '" y2="' + ty + '" stroke="#34A948" stroke-width="2"/>' +
+      '<circle cx="' + mx + '" cy="' + my + '" r="11" fill="#fff"/>' +
+      '<circle cx="' + mx + '" cy="' + my + '" r="7" fill="#34A948"/>';
+  }
+  return '<svg class="mountain" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Your level shown as height on a mountain">' +
+    dots + marker + '</svg>';
+}
+
+function radarSVG(axes) {
+  const keys = Object.keys(SCORING_CONFIG.AXES);
+  const cx = 160, cy = 130, R = 88, n = keys.length;
+  function pt(i, v) {
+    const ang = -Math.PI / 2 + i * 2 * Math.PI / n;
+    const r = R * (v / 5);
+    return [cx + r * Math.cos(ang), cy + r * Math.sin(ang)];
+  }
+  let grid = '';
+  for (let ring = 1; ring <= 5; ring++) {
+    const pts = keys.map(function (k, i) { return pt(i, ring).map(function (v) { return v.toFixed(1); }).join(','); }).join(' ');
+    grid += '<polygon points="' + pts + '" fill="none" stroke="#E2E2E2" stroke-width="1"/>';
+  }
+  keys.forEach(function (k, i) {
+    const p = pt(i, 5);
+    grid += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#E2E2E2" stroke-width="1"/>';
+  });
+  const vals = keys.map(function (k, i) {
+    const v = Math.max(0.12, axes[k]); // нулевая ось всё равно видна точкой
+    return pt(i, v).map(function (x) { return x.toFixed(1); }).join(',');
+  }).join(' ');
+  const dots = keys.map(function (k, i) {
+    const p = pt(i, Math.max(0.12, axes[k]));
+    return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.5" fill="#34A948"/>';
+  }).join('');
+  const labels = keys.map(function (k, i) {
+    const p = pt(i, 5);
+    let dx = 0, dy = 0, anchor = 'middle';
+    if (i === 0) dy = -12;
+    if (i === 1) { dx = 8; dy = 5; anchor = 'start'; }
+    if (i === 2) dy = 20;
+    if (i === 3) { dx = -8; dy = 5; anchor = 'end'; }
+    const ax = SCORING_CONFIG.AXES[k];
+    return '<text x="' + (p[0] + dx).toFixed(1) + '" y="' + (p[1] + dy).toFixed(1) + '" text-anchor="' + anchor +
+      '" font-family="Arial, sans-serif" font-size="13" fill="#000">' + esc(ax.short || ax.label) + '</text>';
+  }).join('');
+  return '<svg width="320" height="270" viewBox="0 0 320 270" role="img" aria-label="Your profile across four dimensions">' +
+    grid + '<polygon points="' + vals + '" fill="rgba(52,169,72,.22)" stroke="#000" stroke-width="1.5"/>' + dots + labels + '</svg>';
+}
+
+/* ---------- рендер ---------- */
+
+let screens = [];
+
+function setProgress() {
+  const total = screens.length;
+  const i = state.screen;
+  const show = i > 0 && screens[i].type !== 'result';
+  progressEl.hidden = !show;
+  if (!show) return;
+  const pct = Math.round((i / (total - 1)) * 100);
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = 'Step ' + i + ' of ' + (total - 1);
+}
+
+function render() {
+  screens = buildScreens();
+  if (state.screen >= screens.length) state.screen = screens.length - 1;
+  const sc = screens[state.screen];
+  setProgress();
+  window.scrollTo(0, 0);
+  const fn = {
+    intro: renderIntro, team: renderTeam, single: renderSingle, tasks: renderTasks,
+    rank: renderRank, pain: renderPain, sandbox: renderSandbox,
+    expectations: renderExpectations, hackathon: renderHackathon, result: renderResult
+  }[sc.type];
+  fn(sc);
+  save();
+}
+
+function nav(nextLabel, canNext, onNext) {
+  const back = state.screen > 1 ? '<button class="btn-ghost" id="backBtn">Back</button>' : '';
+  const html = '<div class="nav">' +
+    '<button class="btn" id="nextBtn"' + (canNext ? '' : ' disabled') + '>' + esc(nextLabel) + '</button>' + back + '</div>';
+  return { html: html, wire: function () {
+    const b = document.getElementById('backBtn');
+    if (b) b.onclick = function () { state.screen--; render(); };
+    document.getElementById('nextBtn').onclick = function () {
+      if (onNext) onNext();
+      state.screen++;
+      render();
+    };
+  } };
+}
+
+function enableNext(on) {
+  const b = document.getElementById('nextBtn');
+  if (b) b.disabled = !on;
+}
+
+function renderIntro() {
+  app.innerHTML =
+    mountainSVG(0, false) +
+    '<h1>How you work with AI today<span class="dot">.</span></h1>' +
+    '<p class="lead">This survey maps where the back-office teams stand with AI, so the workshops in August are built around the work you actually do. At the end you get your own level, four dimensions of how you work, and three concrete steps.</p>' +
+    '<p class="muted">Takes ' + esc(CONFIG.DURATION_TEXT) + '. There are no right answers, and no scores are shown along the way.</p>' +
+    '<div class="note"><p>This survey runs entirely in your browser. Nothing is sent anywhere automatically. At the end you decide whether to share your result.</p>' +
+    '<p>Please keep internal company data out of the free-text fields: client or counterparty names, deal or position figures, personal data of employees, contents of contracts or internal correspondence. Describing the task in general terms is enough.</p></div>' +
+    '<div class="nav"><button class="btn" id="startBtn">Start</button></div>';
+  document.getElementById('startBtn').onclick = function () {
+    if (!state.startedAt) state.startedAt = Date.now();
+    state.screen++;
+    render();
+  };
+}
+
+function renderTeam() {
+  const opts = CONFIG.TEAMS.map(function (t) {
+    return '<option value="' + esc(t) + '"' + (state.team === t ? ' selected' : '') + '>' + esc(t) + '</option>';
+  }).join('');
+  const n = nav('Next', !!state.team && (state.team !== 'Other' || !!state.teamOther.trim()));
+  app.innerHTML =
+    '<h2>Which team are you in<span class="dot">.</span></h2>' +
+    '<p class="muted">This is the only thing we ask about you. Results are grouped by team, and you decide yourself whether to send yours.</p>' +
+    '<div style="margin-top:22px">' +
+    '<label class="field" for="teamSel">Team</label>' +
+    '<select id="teamSel"><option value="">Select your team</option>' + opts +
+    '<option value="Other"' + (state.team === 'Other' ? ' selected' : '') + '>Other</option></select>' +
+    '<div id="otherWrap" style="margin-top:14px"' + (state.team === 'Other' ? '' : ' hidden') + '>' +
+    '<label class="field" for="teamOther">Which one?</label>' +
+    '<input type="text" id="teamOther" maxlength="60" value="' + esc(state.teamOther) + '">' +
+    '</div></div>' + n.html;
+  n.wire();
+  const sel = document.getElementById('teamSel');
+  const wrap = document.getElementById('otherWrap');
+  const other = document.getElementById('teamOther');
+  function upd() {
+    state.team = sel.value;
+    state.teamOther = other.value;
+    wrap.hidden = sel.value !== 'Other';
+    enableNext(!!state.team && (state.team !== 'Other' || !!state.teamOther.trim()));
+    save();
+  }
+  sel.onchange = upd;
+  other.oninput = upd;
+}
+
+function renderSingle(sc) {
+  const question = sc.q;
+  const chosen = state.answers[question.id];
+  const opts = question.options.map(function (o, i) {
+    return '<li><label class="opt' + (chosen === i ? ' checked' : '') + '">' +
+      '<input type="radio" name="' + question.id + '" value="' + i + '"' + (chosen === i ? ' checked' : '') + '>' +
+      '<span>' + esc(o.t) + '</span></label></li>';
+  }).join('');
+  const n = nav('Next', chosen !== undefined && chosen !== null);
+  app.innerHTML =
+    '<h2>' + esc(question.title) + '</h2>' +
+    (question.hint ? '<p class="muted">' + esc(question.hint) + '</p>' : '') +
+    '<ul class="opts">' + opts + '</ul>' + n.html;
+  n.wire();
+  Array.prototype.forEach.call(app.querySelectorAll('input[type=radio]'), function (input) {
+    input.onchange = function () {
+      state.answers[question.id] = parseInt(input.value, 10);
+      Array.prototype.forEach.call(app.querySelectorAll('.opt'), function (l) { l.classList.remove('checked'); });
+      input.closest('.opt').classList.add('checked');
+      enableNext(true);
+      save();
+    };
+  });
+}
+
+function checkboxList(items, selected, name) {
+  return items.map(function (it) {
+    const on = selected.indexOf(it.id) >= 0;
+    return '<li><label class="opt' + (on ? ' checked' : '') + '">' +
+      '<input type="checkbox" name="' + name + '" value="' + it.id + '"' + (on ? ' checked' : '') + '>' +
+      '<span>' + esc(it.t) + '</span></label></li>';
+  }).join('');
+}
+
+function wireCheckboxes(name, onToggle) {
+  Array.prototype.forEach.call(app.querySelectorAll('input[name="' + name + '"]'), function (input) {
+    input.onchange = function () {
+      input.closest('.opt').classList.toggle('checked', input.checked);
+      onToggle(input.value, input.checked, input);
+      save();
+    };
+  });
+}
+
+function renderTasks() {
+  const n = nav('Next', state.tasks.length > 0 || state.tasksNone);
+  app.innerHTML =
+    '<h2>Which of these tasks do you already use AI for<span class="dot">.</span></h2>' +
+    '<p class="muted">Select everything that applies.</p>' +
+    '<ul class="opts">' + checkboxList(TASKS, state.tasks, 'tasks') +
+    '<li><label class="opt' + (state.tasksNone ? ' checked' : '') + '">' +
+    '<input type="checkbox" id="tasksNone"' + (state.tasksNone ? ' checked' : '') + '><span>None of these yet</span></label></li>' +
+    '</ul>' + n.html;
+  n.wire();
+  const none = document.getElementById('tasksNone');
+  wireCheckboxes('tasks', function (id, on) {
+    if (on) { state.tasks.push(id); state.tasksNone = false; none.checked = false; none.closest('.opt').classList.remove('checked'); }
+    else state.tasks = state.tasks.filter(function (x) { return x !== id; });
+    enableNext(state.tasks.length > 0 || state.tasksNone);
+  });
+  none.onchange = function () {
+    state.tasksNone = none.checked;
+    none.closest('.opt').classList.toggle('checked', none.checked);
+    if (none.checked) {
+      state.tasks = [];
+      Array.prototype.forEach.call(app.querySelectorAll('input[name=tasks]'), function (i) {
+        i.checked = false; i.closest('.opt').classList.remove('checked');
+      });
+    }
+    enableNext(state.tasks.length > 0 || state.tasksNone);
+    save();
+  };
+}
+
+function renderRank() {
+  if (!state.order) {
+    const ids = TASKS.map(function (t) { return t.id; });
+    for (let i = ids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = ids[i]; ids[i] = ids[j]; ids[j] = tmp;
+    }
+    state.order = ids;
+  }
+  function label(id) { return TASKS.filter(function (t) { return t.id === id; })[0].t; }
+  const items = state.order.map(function (id, i) {
+    return '<li class="' + (i < 3 ? 'top' : '') + '" draggable="true" data-id="' + id + '">' +
+      '<span class="num">' + (i + 1) + '</span>' +
+      '<span class="txt">' + esc(label(id)) + '</span>' +
+      '<span class="rank-btns">' +
+      '<button class="rank-btn" data-dir="-1" aria-label="Move ' + esc(label(id)) + ' up">&#9650;</button>' +
+      '<button class="rank-btn" data-dir="1" aria-label="Move ' + esc(label(id)) + ' down">&#9660;</button>' +
+      '</span></li>';
+  }).join('');
+  const n = nav('Next', true);
+  app.innerHTML =
+    '<h2>What eats most of your time<span class="dot">.</span></h2>' +
+    '<p class="muted">Move your top three time-eaters to the top. Drag them, or use the arrows. Only the first three are recorded.</p>' +
+    '<ul class="rank" id="rankList">' + items + '</ul>' + n.html;
+  n.wire();
+  const list = document.getElementById('rankList');
+  function move(from, to, refocusDir) {
+    if (to < 0 || to >= state.order.length) return;
+    const item = state.order.splice(from, 1)[0];
+    state.order.splice(to, 0, item);
+    save();
+    renderRank();
+    // Кнопка уезжает вместе со строкой — возвращаем на неё фокус, иначе стрелками не пощёлкать.
+    if (refocusDir) {
+      const btn = document.getElementById('rankList').children[to]
+        .querySelector('.rank-btn[data-dir="' + refocusDir + '"]');
+      if (btn) btn.focus();
+    }
+  }
+  Array.prototype.forEach.call(list.querySelectorAll('.rank-btn'), function (b) {
+    b.onclick = function () {
+      const li = b.closest('li');
+      const idx = Array.prototype.indexOf.call(list.children, li);
+      const dir = parseInt(b.dataset.dir, 10);
+      move(idx, idx + dir, b.dataset.dir);
+    };
+  });
+  let dragIdx = null;
+  Array.prototype.forEach.call(list.children, function (li, i) {
+    li.addEventListener('dragstart', function () { dragIdx = i; li.classList.add('dragging'); });
+    li.addEventListener('dragend', function () { li.classList.remove('dragging'); });
+    li.addEventListener('dragover', function (e) { e.preventDefault(); });
+    li.addEventListener('drop', function (e) {
+      e.preventDefault();
+      const to = Array.prototype.indexOf.call(list.children, li);
+      if (dragIdx !== null && dragIdx !== to) move(dragIdx, to);
+      dragIdx = null;
+    });
+  });
+}
+
+function renderPain() {
+  const n = nav('Next', true);
+  app.innerHTML =
+    '<h2>What is one task you would happily hand over to AI<span class="dot">.</span></h2>' +
+    '<p class="muted">Optional, and the most useful field in the survey. It feeds directly into what we build at the hackathon on ' + esc(CONFIG.WORKSHOP_DATES.hackathon) + '. General terms only, no internal data.</p>' +
+    '<textarea id="pain" maxlength="300" style="min-height:110px" placeholder="For example: the weekly expense report takes half a day">' + esc(state.pain) + '</textarea>' +
+    '<div class="counter"><span id="painCount">' + state.pain.length + '</span> / 300</div>' + n.html;
+  n.wire();
+  const ta = document.getElementById('pain');
+  ta.oninput = function () {
+    state.pain = ta.value;
+    document.getElementById('painCount').textContent = ta.value.length;
+    save();
+  };
+}
+
+function renderSandbox() {
+  const n = nav('Next', state.sandboxDone);
+  app.innerHTML =
+    '<h2>Write one request the way you would actually send it<span class="dot">.</span></h2>' +
+    '<p>Imagine you need to turn a long email thread into a short summary for your manager. Write the request you would send to AI.</p>' +
+    '<p class="muted">This is the only free-form task here. You get an immediate breakdown of what your request contains and what is missing.</p>' +
+    '<textarea id="sbox" maxlength="1000" placeholder="Type your request here">' + esc(state.sandbox) + '</textarea>' +
+    '<div class="counter"><span id="sbCount">' + state.sandbox.length + '</span> / 1000</div>' +
+    '<div class="nav"><button class="btn" id="analyzeBtn"' + (state.sandbox.trim() ? '' : ' disabled') + '>Check my request</button></div>' +
+    '<div id="sbResult"></div>' + n.html;
+  n.wire();
+  const ta = document.getElementById('sbox');
+  const btn = document.getElementById('analyzeBtn');
+  ta.oninput = function () {
+    state.sandbox = ta.value;
+    document.getElementById('sbCount').textContent = ta.value.length;
+    btn.disabled = !ta.value.trim();
+    save();
+  };
+  btn.onclick = function () { showSandboxFeedback(); };
+  if (state.sandboxDone && state.sandbox.trim()) showSandboxFeedback();
+
+  function showSandboxFeedback() {
+    const a = analyzeSandbox(state.sandbox);
+    const has = SANDBOX_CHECKS.filter(function (c) { return a.found[c.id]; });
+    const missing = SANDBOX_CHECKS.filter(function (c) { return !a.found[c.id]; });
+    const improved = buildImprovedPrompt(state.sandbox, a.found);
+    document.getElementById('sbResult').innerHTML =
+      '<h3>What your request contains</h3>' +
+      (has.length
+        ? '<ul class="check">' + has.map(function (c) { return '<li class="yes">' + esc(c.label) + '</li>'; }).join('') + '</ul>'
+        : '<p class="muted">None of the elements below are present yet. That is a normal starting point.</p>') +
+      (missing.length
+        ? '<h3>What would change the answer</h3><ul class="check">' +
+          missing.map(function (c) { return '<li class="no"><b>' + esc(c.label) + '.</b> ' + esc(c.missing) + '</li>'; }).join('') + '</ul>'
+        : '<h3>What would change the answer</h3><p>Your request already covers every element we look for.</p>') +
+      '<h3>The same request, assembled</h3>' +
+      '<div class="prompt-card"><pre id="improvedPrompt">' + esc(improved) + '</pre>' +
+      '<button class="copy-btn" data-copy="improvedPrompt">Copy</button></div>' +
+      '<p class="muted">This version was assembled from your own text on this page. Nothing was sent anywhere.</p>';
+    wireCopyButtons();
+    state.sandboxDone = true;
+    enableNext(true);
+    save();
+  }
+}
+
+function renderExpectations() {
+  const list = INTERESTS.filter(function (i) { return !(i.skipIfNoUse && noUse()); });
+  function ok() { return state.blockers.length > 0 && state.interests.length > 0; }
+  const n = nav('Next', ok());
+  app.innerHTML =
+    '<h2>What gets in the way, and what would help<span class="dot">.</span></h2>' +
+    '<h3 style="margin-top:24px">What gets in the way today</h3>' +
+    '<p class="muted">Select everything that applies.</p>' +
+    '<ul class="opts">' + checkboxList(BLOCKERS, state.blockers, 'blockers') + '</ul>' +
+    '<div id="blkOtherWrap"' + (state.blockers.indexOf('other') >= 0 ? '' : ' hidden') + ' style="margin-top:14px">' +
+    '<label class="field" for="blkOther">What exactly?</label>' +
+    '<input type="text" id="blkOther" maxlength="140" value="' + esc(state.blockerOther) + '"></div>' +
+    '<h3 style="margin-top:34px">What would be worth your time in the workshops</h3>' +
+    '<p class="muted">Three sessions on ' + esc(CONFIG.WORKSHOP_DATES.w1) + ', ' + esc(CONFIG.WORKSHOP_DATES.w2) + ' and ' + esc(CONFIG.WORKSHOP_DATES.w3) + '.</p>' +
+    '<ul class="opts">' + checkboxList(list, state.interests, 'interests') + '</ul>' + n.html;
+  n.wire();
+  const wrap = document.getElementById('blkOtherWrap');
+  const other = document.getElementById('blkOther');
+  other.oninput = function () { state.blockerOther = other.value; save(); };
+  wireCheckboxes('blockers', function (id, on) {
+    if (on) state.blockers.push(id);
+    else state.blockers = state.blockers.filter(function (x) { return x !== id; });
+    wrap.hidden = state.blockers.indexOf('other') < 0;
+    enableNext(ok());
+  });
+  wireCheckboxes('interests', function (id, on) {
+    if (on) state.interests.push(id);
+    else state.interests = state.interests.filter(function (x) { return x !== id; });
+    enableNext(ok());
+  });
+}
+
+function renderHackathon() {
+  const opts = HACKATHON.map(function (o) {
+    return '<li><label class="opt' + (state.hackathon === o.id ? ' checked' : '') + '">' +
+      '<input type="radio" name="hack" value="' + o.id + '"' + (state.hackathon === o.id ? ' checked' : '') + '>' +
+      '<span>' + esc(o.t) + '</span></label></li>';
+  }).join('');
+  const n = nav('See my result', !!state.hackathon);
+  app.innerHTML =
+    '<h2>Would you bring a real task of yours to the hackathon on ' + esc(CONFIG.WORKSHOP_DATES.hackathon) + '<span class="dot">.</span></h2>' +
+    '<ul class="opts">' + opts + '</ul>' + n.html;
+  n.wire();
+  Array.prototype.forEach.call(app.querySelectorAll('input[name=hack]'), function (input) {
+    input.onchange = function () {
+      state.hackathon = input.value;
+      Array.prototype.forEach.call(app.querySelectorAll('.opt'), function (l) { l.classList.remove('checked'); });
+      input.closest('.opt').classList.add('checked');
+      enableNext(true);
+      save();
+    };
+  });
+}
+
+function payloadFor(res) {
+  const a = analyzeSandbox(state.sandbox);
+  return {
+    v: 2,
+    ts: new Date().toISOString(),
+    team: state.team === 'Other' ? ('Other: ' + state.teamOther.trim()) : state.team,
+    level: res.level,
+    group: res.group,
+    axes: res.axes,
+    answers: res.scores,
+    flags: res.flags,
+    tasks_using_ai: state.tasksNone ? [] : state.tasks,
+    time_sinks: (state.order || []).slice(0, 3),
+    own_pain: state.pain.trim(),
+    sandbox_prompt: state.sandbox.trim(),
+    sandbox_score: a.score,
+    blockers: state.blockers.map(function (b) { return b === 'other' && state.blockerOther.trim() ? 'other: ' + state.blockerOther.trim() : b; }),
+    interests: state.interests,
+    hackathon: state.hackathon,
+    duration_sec: state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : 0
+  };
+}
+
+function encodePayload(obj) {
+  const json = JSON.stringify(obj);
+  return CONFIG.PAYLOAD_PREFIX + btoa(unescape(encodeURIComponent(json)));
+}
+
+function renderResult() {
+  const res = computeResult();
+  const lvl = LEVELS[res.level];
+  const steps = RECOMMENDATIONS[res.level].slice();
+  if (res.flags.safety_gate) {
+    steps.unshift('Settle the question of what data can go where before you widen your use of AI. One hour with the policy, and every later step becomes safe.');
+  }
+  if (res.flags.false_confidence) {
+    steps.unshift('Add one verification step to the tasks you already run through AI: pick the single fact or figure that would hurt most if it were wrong, and check it against the source every time.');
+  }
+  const prompts = PROMPTS_BY_TEAM[state.team] || PROMPTS_BY_TEAM['default'];
+  const payload = encodePayload(payloadFor(res));
+
+  const legend = Object.keys(SCORING_CONFIG.AXES).map(function (k) {
+    const ax = SCORING_CONFIG.AXES[k];
+    return '<li><b>' + esc(ax.label) + ' &mdash; ' + res.axes[k] + ' of 5</b><span class="muted">' + esc(ax.hint) + '</span></li>';
+  }).join('');
+
+  app.innerHTML =
+    '<div class="result-head">' +
+    '<div class="level-num">Level ' + res.level + ' of 5</div>' +
+    '<h1>' + esc(lvl.name) + '<span class="dot">.</span></h1>' +
+    '<p class="lead">' + esc(lvl.desc) + '</p>' +
+    '<p>The next move from here: ' + esc(lvl.vector) + '</p>' +
+    (res.level <= 1 ? '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>' : '') +
+    '</div>' +
+    mountainSVG(res.level, true) +
+    '<h3>Your four dimensions</h3>' +
+    '<div class="radar-row">' + radarSVG(res.axes) + '<ul class="axes-legend">' + legend + '</ul></div>' +
+    '<h3>Three steps that fit where you are</h3>' +
+    '<ul class="steps">' + steps.slice(0, 3).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' +
+    '<h3>Two prompts to use this week</h3>' +
+    prompts.map(function (p, i) {
+      return '<div class="prompt-card"><h4>' + esc(p.title) + '</h4>' +
+        '<pre id="teamPrompt' + i + '">' + esc(p.body) + '</pre>' +
+        '<button class="copy-btn" data-copy="teamPrompt' + i + '">Copy</button></div>';
+    }).join('') +
+    '<h3>What happens next</h3>' +
+    '<p>Three hands-on workshops on ' + esc(CONFIG.WORKSHOP_DATES.w1) + ', ' + esc(CONFIG.WORKSHOP_DATES.w2) + ' and ' + esc(CONFIG.WORKSHOP_DATES.w3) + ', built around what these answers show. On ' + esc(CONFIG.WORKSHOP_DATES.hackathon) + ' we take real tasks from your teams and build working solutions in one day.</p>' +
+    '<h3>Send your result</h3>' +
+    '<p>' + esc(CONFIG.DELIVERY) + ' The line contains your answers and level, nothing else.</p>' +
+    '<div class="nav"><button class="btn" id="copyResult">Copy my result</button>' +
+    '<button class="btn-ghost" id="showLine">Show the line</button></div>' +
+    '<div id="copyStatus" class="muted" style="margin-top:10px" role="status"></div>' +
+    '<div id="lineWrap" hidden style="margin-top:16px">' +
+    '<p class="muted">Click the box to select everything, then copy it manually.</p>' +
+    '<textarea class="payload" id="payloadBox" readonly>' + esc(payload) + '</textarea></div>';
+
+  wireCopyButtons();
+  const status = document.getElementById('copyStatus');
+  const lineWrap = document.getElementById('lineWrap');
+  const box = document.getElementById('payloadBox');
+  box.onclick = function () { box.select(); };
+  document.getElementById('showLine').onclick = function () { lineWrap.hidden = false; box.select(); };
+  document.getElementById('copyResult').onclick = function () {
+    copyText(payload, function (ok) {
+      if (ok) {
+        status.textContent = 'Copied. ' + CONFIG.DELIVERY;
+        markDone();
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      } else {
+        status.textContent = 'Copying was blocked by the browser. Use the box below.';
+        lineWrap.hidden = false;
+        box.select();
+      }
+    });
+  };
+}
+
+function copyText(text, cb) {
+  if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(function () { cb(true); }, function () { cb(fallbackCopy(text)); });
+  } else {
+    cb(fallbackCopy(text));
+  }
+}
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+function wireCopyButtons() {
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-btn'), function (b) {
+    b.onclick = function () {
+      const el = document.getElementById(b.dataset.copy);
+      copyText(el.textContent, function (ok) {
+        b.textContent = ok ? 'Copied' : 'Select and copy';
+        if (!ok) {
+          const r = document.createRange();
+          r.selectNodeContents(el);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+        }
+        setTimeout(function () { b.textContent = 'Copy'; }, 2000);
+      });
+    };
+  });
+}
+
+function renderAlreadyDone() {
+  progressEl.hidden = true;
+  app.innerHTML =
+    mountainSVG(0, false) +
+    '<h1>You have already completed this survey<span class="dot">.</span></h1>' +
+    '<p class="lead">If you need to take it again, ping Dmitrii on Slack.</p>';
+}
+
+/* ---------- старт ---------- */
+
+load();
+if (isDone() && !CONFIG.ALLOW_RETAKE) {
+  renderAlreadyDone();
+} else {
+  if (CONFIG.ALLOW_RETAKE) { try { localStorage.removeItem(DONE_KEY); } catch (e) {} }
+  render();
+}
+</script>
+</body>
+</html>
