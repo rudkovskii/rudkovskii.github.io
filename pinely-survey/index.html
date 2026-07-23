@@ -124,7 +124,9 @@ const CONFIG = {
   // Блокировки повторного прохождения нет: анкету можно пройти сколько угодно раз.
   // На экране результата есть кнопка «Take the survey again».
 
-  // Список команд в выпадающем списке. Вариант Other добавляется автоматически.
+  // Список команд в выпадающем списке. Других вариантов нет: если человек
+  // из команды, которой тут не хватает, — добавь её сюда, а не полагайся
+  // на свободное поле, иначе выгрузка расползётся по вариантам написания.
   TEAMS: ['Finance', 'HR', 'Legal Compliance & Tax', 'Market Setup Operations', 'Regional Directors'],
 
   // Конкретных дат в анкете нет намеренно: даты воркшопов и хакатона сдвигаются,
@@ -378,7 +380,6 @@ function goBack() {
 let state = {
   answers: {},        // a1..a6 -> option index
   team: '',
-  teamOther: '',
   tasks: [],
   tasksNone: false,
   order: null,        // порядок карточек в вопросе про поглотители времени
@@ -404,7 +405,7 @@ function load() {
 // Полный сброс: используется кнопкой «пройти заново» на экране результата.
 function resetSurvey() {
   state = {
-    answers: {}, team: '', teamOther: '', tasks: [], tasksNone: false, order: null,
+    answers: {}, team: '', tasks: [], tasksNone: false, order: null,
     pain: '', sandbox: '', blockers: [], blockerOther: '', interests: [],
     hackathon: '', startedAt: null, screen: 0
   };
@@ -699,31 +700,21 @@ function renderTeam() {
   const opts = CONFIG.TEAMS.map(function (t) {
     return '<option value="' + esc(t) + '"' + (state.team === t ? ' selected' : '') + '>' + esc(t) + '</option>';
   }).join('');
-  const n = nav('Next', !!state.team && (state.team !== 'Other' || !!state.teamOther.trim()));
+  const n = nav('Next', !!state.team);
   app.innerHTML =
     '<h2>Which team are you in<span class="dot">.</span></h2>' +
     '<p class="muted">This is the only thing we ask about you. Results are grouped by team, and you decide yourself whether to send yours.</p>' +
     '<div style="margin-top:22px">' +
     '<label class="field" for="teamSel">Team</label>' +
-    '<select id="teamSel"><option value="">Select your team</option>' + opts +
-    '<option value="Other"' + (state.team === 'Other' ? ' selected' : '') + '>Other</option></select>' +
-    '<div id="otherWrap" style="margin-top:14px"' + (state.team === 'Other' ? '' : ' hidden') + '>' +
-    '<label class="field" for="teamOther">Which one?</label>' +
-    '<input type="text" id="teamOther" maxlength="60" value="' + esc(state.teamOther) + '">' +
-    '</div></div>' + n.html;
+    '<select id="teamSel"><option value="">Select your team</option>' + opts + '</select>' +
+    '</div>' + n.html;
   n.wire();
   const sel = document.getElementById('teamSel');
-  const wrap = document.getElementById('otherWrap');
-  const other = document.getElementById('teamOther');
-  function upd() {
+  sel.onchange = function () {
     state.team = sel.value;
-    state.teamOther = other.value;
-    wrap.hidden = sel.value !== 'Other';
-    enableNext(!!state.team && (state.team !== 'Other' || !!state.teamOther.trim()));
+    enableNext(!!state.team);
     save();
-  }
-  sel.onchange = upd;
-  other.oninput = upd;
+  };
 }
 
 function renderSingle(sc) {
@@ -959,7 +950,7 @@ function payloadFor(res) {
   return {
     v: 2,
     ts: new Date().toISOString(),
-    team: state.team === 'Other' ? ('Other: ' + state.teamOther.trim()) : state.team,
+    team: state.team,
     level: res.level,
     group: res.group,
     path: currentPath(),   // end | light | full — какую версию анкеты человек увидел
