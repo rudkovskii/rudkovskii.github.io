@@ -658,9 +658,11 @@ function render() {
 }
 
 function nav(nextLabel, canNext, onNext) {
+  // Назад слева, вперёд справа — направление движения должно совпадать
+  // с направлением чтения, иначе кнопки читаются задом наперёд.
   const back = state.screen > 0 ? '<button class="btn-ghost" id="backBtn">Back</button>' : '';
-  const html = '<div class="nav">' +
-    '<button class="btn" id="nextBtn"' + (canNext ? '' : ' disabled') + '>' + esc(nextLabel) + '</button>' + back + '</div>';
+  const html = '<div class="nav">' + back +
+    '<button class="btn" id="nextBtn"' + (canNext ? '' : ' disabled') + '>' + esc(nextLabel) + '</button></div>';
   return { html: html, wire: function () {
     const b = document.getElementById('backBtn');
     if (b) b.onclick = goBack;
@@ -1042,9 +1044,11 @@ function renderResult() {
   document.getElementById('retakeBtn').onclick = function () {
     retakeWrap.innerHTML =
       '<p class="muted" id="retakeAsk" role="status">Starting again clears your answers. Copy your result first if you have not sent it.</p>' +
-      '<div class="nav" style="margin-top:0"><button class="btn-ghost" id="retakeYes">Start again</button>' +
-      '<button class="btn-ghost" id="retakeNo">Keep my result</button></div>';
-    document.getElementById('retakeYes').focus();
+      '<div class="nav" style="margin-top:0"><button class="btn-ghost" id="retakeNo">Keep my result</button>' +
+      '<button class="btn-ghost" id="retakeYes">Start again</button></div>';
+    // Фокус на безопасном варианте: «Start again» стирает ответы, и Enter,
+    // нажатый по инерции, не должен их сносить.
+    document.getElementById('retakeNo').focus();
     document.getElementById('retakeYes').onclick = resetSurvey;
     document.getElementById('retakeNo').onclick = function () { renderResult(); };
   };
