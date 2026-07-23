@@ -68,6 +68,8 @@ const PREFIX = 'PINELY2-';
 const AXES = ['prompting', 'verification', 'systemic', 'results'];
 const AXIS_LABEL = { prompting: 'Промпт', verification: 'Проверка', systemic: 'Системность', results: 'Результат' };
 const LEVEL_NAMES = ['Skeptic', 'Observer', 'Experimenter', 'Practitioner', 'Integrator', 'Transformer'];
+// Какую версию анкеты человек увидел. Задаётся первым вопросом про частоту.
+const PATH_LABEL = { end: 'отсеялся сразу', light: 'короткая', full: 'полная' };
 
 let rows = [];
 
@@ -99,13 +101,15 @@ function render() {
 
   const byGroup = { Light: 0, Medium: 0, Advanced: 0 };
   let flagged = 0, hackYes = 0;
+  const byPath = { end: 0, light: 0, full: 0 };
   rows.forEach(function (r) {
+    if (byPath[r.path] !== undefined) byPath[r.path]++;
     byGroup[r.group || groupOf(r.level)]++;
     if (r.flags && (r.flags.safety_gate || r.flags.false_confidence)) flagged++;
     if (r.hackathon && r.hackathon.indexOf('yes') === 0) hackYes++;
   });
 
-  const head = ['#', 'Дата', 'Команда', 'Ур.', 'Группа', 'Промпт', 'Проверка', 'Системность', 'Результат',
+  const head = ['#', 'Дата', 'Команда', 'Версия', 'Ур.', 'Группа', 'Промпт', 'Проверка', 'Системность', 'Результат',
     'Флаги', 'Песочница', 'Хакатон', 'Уже с AI', 'Поглотители времени', 'Своя боль', 'Барьеры', 'Интересы', 'Сек.'];
 
   const body = rows.map(function (r, i) {
@@ -118,11 +122,12 @@ function render() {
       '<td>' + (i + 1) + '</td>' +
       '<td>' + esc(shortDate(r.ts)) + '</td>' +
       '<td>' + esc(r.team) + '</td>' +
+      '<td>' + esc(PATH_LABEL[r.path] || r.path || '') + '</td>' +
       '<td><b>' + esc(r.level) + '</b> ' + esc(LEVEL_NAMES[r.level] || '') + '</td>' +
       '<td><span class="grp ' + esc(g) + '">' + esc(g) + '</span></td>' +
       AXES.map(function (k) { return '<td>' + esc(ax[k]) + '</td>'; }).join('') +
       '<td>' + (flags.join('') || '') + '</td>' +
-      '<td>' + esc(r.sandbox_score) + ' / 6</td>' +
+      '<td>' + (r.sandbox_score === null || r.sandbox_score === undefined ? '&mdash;' : esc(r.sandbox_score) + ' / 6') + '</td>' +
       '<td>' + esc(r.hackathon) + '</td>' +
       '<td class="wide">' + esc((r.tasks_using_ai || []).join(', ')) + '</td>' +
       '<td class="wide">' + esc((r.time_sinks || []).join(', ')) + '</td>' +
@@ -146,6 +151,7 @@ function render() {
     '<div class="stat"><b>' + byGroup.Light + '</b><span>Light (ур. 0–1)</span></div>' +
     '<div class="stat"><b>' + byGroup.Medium + '</b><span>Medium (ур. 2–3)</span></div>' +
     '<div class="stat"><b>' + byGroup.Advanced + '</b><span>Advanced (ур. 4–5)</span></div>' +
+    '<div class="stat"><b>' + byPath.end + '</b><span>вообще не пользуются AI</span></div>' +
     '<div class="stat"><b>' + flagged + '</b><span>с флагами</span></div>' +
     '<div class="stat"><b>' + hackYes + '</b><span>готовы на хакатон</span></div>' +
     '</div>' +
@@ -166,17 +172,17 @@ function render() {
 }
 
 function toCSV() {
-  const cols = ['n', 'ts', 'team', 'level', 'level_name', 'group',
+  const cols = ['n', 'ts', 'team', 'path', 'level', 'level_name', 'group',
     'ax_prompting', 'ax_verification', 'ax_systemic', 'ax_results',
-    'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
+    'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
     'safety_gate', 'false_confidence', 'sandbox_score', 'hackathon',
     'tasks_using_ai', 'time_sinks', 'own_pain', 'sandbox_prompt', 'blockers', 'interests', 'duration_sec'];
   const lines = [cols.join(',')];
   rows.forEach(function (r, i) {
     const a = r.answers || {}, ax = r.axes || {}, f = r.flags || {};
-    const vals = [i + 1, r.ts, r.team, r.level, LEVEL_NAMES[r.level] || '', r.group || groupOf(r.level),
+    const vals = [i + 1, r.ts, r.team, r.path || '', r.level, LEVEL_NAMES[r.level] || '', r.group || groupOf(r.level),
       ax.prompting, ax.verification, ax.systemic, ax.results,
-      a.a1, a.a2, a.a3, a.a4, a.a5, a.a6,
+      a.a0, a.a1, a.a2, a.a3, a.a4, a.a5, a.a6,
       f.safety_gate ? 1 : 0, f.false_confidence ? 1 : 0, r.sandbox_score, r.hackathon,
       (r.tasks_using_ai || []).join('; '), (r.time_sinks || []).join('; '), r.own_pain, r.sandbox_prompt,
       (r.blockers || []).join('; '), (r.interests || []).join('; '), r.duration_sec];

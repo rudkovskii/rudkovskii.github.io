@@ -135,8 +135,9 @@ const CONFIG = {
   // Куда человек относит строку с результатом.
   DELIVERY: 'Send this line to Dmitrii in a direct message on Slack.',
 
-  // Честное время прохождения.
-  DURATION_TEXT: 'about 7 minutes',
+  // Честное время прохождения. Оно разное: первый вопрос делит людей на три
+  // маршрута, и тот, кто AI не пользуется, доходит до конца за минуту.
+  DURATION_TEXT: 'about 7 minutes, and less if AI is not part of your work',
 
   // Префикс строки результата. Меняй, только если поменяешь его же в decode.html.
   PAYLOAD_PREFIX: 'PINELY2-'
@@ -149,14 +150,15 @@ const SCORING_CONFIG = {
   // Ложная продвинутость: верификация ниже остальных на этот разрыв — минус уровень.
   FALSE_CONFIDENCE: { question: 'a3', gap: 2, penalty: 1 },
   // Если по частоте использования 0 — уровень 0 независимо от остального.
-  ZERO_USE: { question: 'a1', value: 0 },
+  ZERO_USE: { question: 'a0', value: 0 },
   MAX_LEVEL: 5,
   // Оси радара: из каких вопросов считается каждая (среднее, округление вниз).
   // label — подпись в списке под радаром, short — короткая подпись на самом радаре.
+  // Вопросы, которых на коротком пути не было, в расчёт оси просто не попадают.
   AXES: {
     prompting:    { label: 'Prompting',          short: 'Prompting', hint: 'How completely you describe the task', from: ['a2'] },
     verification: { label: 'Checking results',   short: 'Checking',  hint: 'Whether you verify output before using it', from: ['a3'] },
-    systemic:     { label: 'Habits & templates', short: 'Habits',    hint: 'Whether AI is part of your regular work', from: ['a1', 'a6'] },
+    systemic:     { label: 'Habits & templates', short: 'Habits',    hint: 'Whether AI is part of your regular work', from: ['a0', 'a1', 'a6'] },
     results:      { label: 'Real outcomes',      short: 'Outcomes',  hint: 'Whether it reliably produces usable work', from: ['a4', 'a5'] }
   },
   // Группы обучения. Участнику не показываются, идут только в выгрузку.
@@ -181,21 +183,43 @@ const SCORING_CONFIG = {
 //    а стоит 2. Часть вариантов — приманки: звучат правильно и не работают
 //    (попросить AI проверить самого себя; убрать из таблицы только колонку с именами).
 //
-// skipIfNoUse: true — вопрос пропускается у тех, кто AI почти не пользуется.
+// paths — на каких маршрутах вопрос показывается. Маршрут задаёт ПЕРВЫЙ вопрос a0:
+//   'end'   — «никогда»: анкета заканчивается сразу, дальше спрашивать нечего
+//   'light' — «редко»: короткая версия, только то, на что человек может ответить
+//   'full'  — «регулярно/постоянно»: всё
+// Вопрос без поля paths показывается на всех маршрутах.
 const QUESTIONS = [
   {
-    id: 'a1',
-    title: 'Over the past month, which of these actually happened in your work?',
-    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar. If several are true, pick the one that happened most often.',
+    id: 'a0',
+    // ЕДИНСТВЕННЫЙ вопрос, где варианты идут естественным порядком (никогда → постоянно).
+    // Он не ловит и не разделяет, он маршрутизирует: тут понятность важнее хитрости.
+    // route на варианте задаёт маршрут, см. комментарий выше.
+    title: 'How often do you use AI tools, for work or for anything of your own?',
+    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar.',
     options: [
-      { t: 'I reused a request I had written earlier instead of composing a new one.', score: 4 },
-      { t: 'Nothing I worked on involved AI in any way.', score: 0 },
-      { t: 'Something I sent out started as an AI draft that I then reworked.', score: 3 },
-      { t: 'A colleague used a request or a step that I had set up.', score: 5 },
-      { t: 'I opened an AI tool once or twice and went back to doing it my own way.', score: 1 }
+      { t: 'Never. I have not used them.', score: 0, route: 'end' },
+      { t: 'Rarely. I have tried them a few times, and it has not stuck.', score: 1, route: 'light' },
+      { t: 'Regularly. A few times a week.', score: 3, route: 'full' },
+      { t: 'Constantly. Most working days.', score: 5, route: 'full' }
     ]
   },
   {
+    id: 'a1',
+    paths: ['full'],
+    // Частоту уже спросили в a0, поэтому здесь меряется глубина встроенности.
+    // Вариантов «ничего не было» и «открыл пару раз» тут нет намеренно: человек,
+    // который двумя экранами раньше сказал «регулярно», не может их выбрать честно.
+    title: 'Over the past month, which of these actually happened in your work?',
+    hint: 'If several are true, pick the one that happened most often.',
+    options: [
+      { t: 'I reused a request I had written earlier instead of composing a new one.', score: 4 },
+      { t: 'One-off asks only. Nothing that repeats from week to week.', score: 2 },
+      { t: 'A colleague used a request or a step that I had set up.', score: 5 },
+      { t: 'Something I sent out started as an AI draft that I then reworked.', score: 3 }
+    ]
+  },
+  {
+    paths: ['full', 'light'],
     id: 'a2',
     title: 'Something you were promised has slipped for the second time, and you have to write to the person responsible. What would you send to AI?',
     hint: 'Pick the request you would actually type.',
@@ -208,6 +232,7 @@ const QUESTIONS = [
   },
   {
     id: 'a3',
+    paths: ['full', 'light'],
     title: 'AI has produced something that goes straight into your work: a text, a set of numbers, a summary. What happens before you use it?',
     hint: 'By checking we mean comparing what came back against something you trust.',
     options: [
@@ -215,13 +240,13 @@ const QUESTIONS = [
       { t: 'If it reads convincingly, it goes in.', score: 1 },
       { t: 'I already know which parts of this kind of output tend to be wrong, and those are the parts I look at.', score: 5 },
       { t: 'I ask it to review its own answer and point out anything it is unsure about.', score: 2 },
-      { t: 'Nothing of mine comes from AI in the first place.', score: 0 },
+      { t: 'I do not let AI near anything that goes into a work document.', score: 0 },
       { t: 'I read it through and fix whatever sounds off.', score: 2 }
     ]
   },
   {
     id: 'a4',
-    skipIfNoUse: true,
+    paths: ['full'],
     title: 'The answer came back weak or beside the point. What happens next?',
     options: [
       { t: 'I rewrite the request, add what I left out, and try again.', score: 3 },
@@ -232,6 +257,7 @@ const QUESTIONS = [
   },
   {
     id: 'a5',
+    paths: ['full', 'light'],
     title: 'You want help with a work file that carries internal detail: people’s names, internal figures, wording from an agreement. What would you do?',
     options: [
       { t: 'I have not really thought about where a file like that can go.', score: 1 },
@@ -244,7 +270,7 @@ const QUESTIONS = [
   },
   {
     id: 'a6',
-    skipIfNoUse: true,
+    paths: ['full'],
     title: 'You are about to ask AI for something you have asked before. Where does the request come from?',
     options: [
       { t: 'I roughly remember what worked last time and type it again.', score: 2 },
@@ -289,7 +315,7 @@ const INTERESTS = [
   { id: 'research',    t: 'Finding information and cross-checking it' },
   { id: 'templates',   t: 'Templates for the things you do over and over' },
   { id: 'automation',  t: 'Wiring it into Slack and the Google tools' },
-  { id: 'agents',      t: 'Small tools that run a task on their own', skipIfNoUse: true },
+  { id: 'agents',      t: 'Small tools that run a task on their own', paths: ['full'] },
   { id: 'data_rules',  t: 'Knowing what is safe to put in' }
 ];
 
@@ -334,8 +360,8 @@ const SANDBOX_CHECKS = [
 // Ключи с версией: в ответах хранятся НОМЕРА вариантов, поэтому после правки
 // порядка вариантов старый сохранённый прогресс означал бы уже другие ответы.
 // Меняешь порядок или состав вариантов — подними v3 на v4.
-const STORAGE_KEY = 'pinely_ai_survey_progress_v3';
-const DONE_KEY = 'pinely_ai_survey_done_v3';
+const STORAGE_KEY = 'pinely_ai_survey_progress_v4';
+const DONE_KEY = 'pinely_ai_survey_done_v4';
 
 const app = document.getElementById('app');
 const progressEl = document.getElementById('progress');
@@ -390,7 +416,16 @@ function scoreOf(id) {
   if (idx === undefined || idx === null) return null;
   return q(id).options[idx].score;
 }
-function noUse() { return scoreOf('a1') === 0; }
+// Маршрут целиком выводится из ответа на a0 и нигде не хранится отдельно:
+// человек может вернуться назад и переставить ответ, и всё пересоберётся само.
+function currentPath() {
+  const idx = state.answers.a0;
+  if (idx === undefined || idx === null) return 'full';
+  return q('a0').options[idx].route;
+}
+function onPath(item) {
+  return !item.paths || item.paths.indexOf(currentPath()) >= 0;
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function (c) {
@@ -401,15 +436,25 @@ function esc(s) {
 /* ---------- набор экранов ---------- */
 
 function buildScreens() {
-  const s = [{ type: 'intro' }, { type: 'team' }];
+  const path = currentPath();
+  const s = [{ type: 'intro' }, { type: 'team' }, { type: 'single', q: q('a0') }];
+
+  // «Никогда» — дальше спрашивать нечего: всё остальное предполагает опыт,
+  // которого у человека нет. Сразу к результату, строку он всё равно присылает,
+  // иначе эти люди пропадут из выгрузки, а это и есть группа Light.
+  if (path === 'end') {
+    s.push({ type: 'result' });
+    return s;
+  }
+
   QUESTIONS.forEach(function (question) {
-    if (question.skipIfNoUse && noUse()) return;
-    s.push({ type: 'single', q: question });
+    if (question.id === 'a0') return;
+    if (onPath(question)) s.push({ type: 'single', q: question });
   });
   s.push({ type: 'tasks' });
-  s.push({ type: 'rank' });
+  if (path === 'full') s.push({ type: 'rank' });      // перетаскивание — самый тяжёлый экран
   s.push({ type: 'pain' });
-  s.push({ type: 'sandbox' });
+  if (path === 'full') s.push({ type: 'sandbox' });   // писать промпт тому, кто их не пишет, бессмысленно
   s.push({ type: 'expectations' });
   s.push({ type: 'hackathon' });
   s.push({ type: 'result' });
@@ -428,6 +473,10 @@ function median(arr) {
 function computeResult() {
   const scores = {};
   QUESTIONS.forEach(function (question) {
+    // Только вопросы текущего маршрута. Иначе человек, который прошёл половину
+    // полной версии, вернулся на a0 и переставил ответ на «никогда», утащил бы
+    // в скоринг ответы с экранов, которых на его маршруте уже нет.
+    if (!onPath(question)) return;
     const v = scoreOf(question.id);
     if (v !== null) scores[question.id] = v;
   });
@@ -630,7 +679,7 @@ function renderIntro() {
   app.innerHTML =
     mountainSVG(0, false) +
     '<h1>How you work with AI today<span class="dot">.</span></h1>' +
-    '<p class="lead">This survey maps where the back-office teams stand with AI, so the workshops are built around the work you actually do. At the end you see your own level and how you score across four dimensions.</p>' +
+    '<p class="lead">This survey maps where the back-office teams stand with AI, so the workshops are built around the work you actually do. The first question decides how long it runs: if AI is not part of your work, it stops early. At the end you see your own level and how you score across four dimensions.</p>' +
     '<p class="muted">Takes ' + esc(CONFIG.DURATION_TEXT) + '. There are no right answers, and no scores are shown along the way.</p>' +
     '<div class="note"><p>This survey runs entirely in your browser. Nothing is sent anywhere automatically. At the end you decide whether to share your result.</p>' +
     '<p>Please keep internal company data out of the free-text fields: client or counterparty names, deal or position figures, personal data of employees, contents of contracts or internal correspondence. Describing the task in general terms is enough.</p></div>' +
@@ -843,7 +892,7 @@ function renderSandbox() {
 }
 
 function renderExpectations() {
-  const list = INTERESTS.filter(function (i) { return !(i.skipIfNoUse && noUse()); });
+  const list = INTERESTS.filter(onPath);
   function ok() { return state.blockers.length > 0 && state.interests.length > 0; }
   const n = nav('Next', ok());
   app.innerHTML =
@@ -898,23 +947,29 @@ function renderHackathon() {
 
 function payloadFor(res) {
   const a = analyzeSandbox(state.sandbox);
+  // В выгрузку идёт только то, что человек на своём маршруте реально видел.
+  // Иначе, сменив ответ на a0 в середине, он утащил бы в строку данные с экранов,
+  // которых у него уже нет, и в декодере это выглядело бы враньём.
+  const types = buildScreens().map(function (s) { return s.type; });
+  function seen(t) { return types.indexOf(t) >= 0; }
   return {
     v: 2,
     ts: new Date().toISOString(),
     team: state.team === 'Other' ? ('Other: ' + state.teamOther.trim()) : state.team,
     level: res.level,
     group: res.group,
+    path: currentPath(),   // end | light | full — какую версию анкеты человек увидел
     axes: res.axes,
     answers: res.scores,
     flags: res.flags,
-    tasks_using_ai: state.tasksNone ? [] : state.tasks,
-    time_sinks: (state.order || []).slice(0, 3),
-    own_pain: state.pain.trim(),
-    sandbox_prompt: state.sandbox.trim(),
-    sandbox_score: a.score,
-    blockers: state.blockers.map(function (b) { return b === 'other' && state.blockerOther.trim() ? 'other: ' + state.blockerOther.trim() : b; }),
-    interests: state.interests,
-    hackathon: state.hackathon,
+    tasks_using_ai: seen('tasks') && !state.tasksNone ? state.tasks : [],
+    time_sinks: seen('rank') ? (state.order || []).slice(0, 3) : [],
+    own_pain: seen('pain') ? state.pain.trim() : '',
+    sandbox_prompt: seen('sandbox') ? state.sandbox.trim() : '',
+    sandbox_score: seen('sandbox') ? a.score : null,
+    blockers: seen('expectations') ? state.blockers.map(function (b) { return b === 'other' && state.blockerOther.trim() ? 'other: ' + state.blockerOther.trim() : b; }) : [],
+    interests: seen('expectations') ? state.interests : [],
+    hackathon: seen('hackathon') ? state.hackathon : '',
     duration_sec: state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : 0
   };
 }
@@ -927,6 +982,7 @@ function encodePayload(obj) {
 function renderResult() {
   const res = computeResult();
   const lvl = LEVELS[res.level];
+  const path = currentPath();
   const payload = encodePayload(payloadFor(res));
 
   const legend = Object.keys(SCORING_CONFIG.AXES).map(function (k) {
@@ -934,16 +990,23 @@ function renderResult() {
     return '<li><b>' + esc(ax.label) + ' &mdash; ' + res.axes[k] + ' of 5</b><span class="muted">' + esc(ax.hint) + '</span></li>';
   }).join('');
 
+  // На маршруте «никогда» осей нет — рисовать радар из четырёх нулей незачем.
+  const radar = path === 'end' ? '' :
+    '<h3>Your four dimensions</h3>' +
+    '<div class="radar-row">' + radarSVG(res.axes) + '<ul class="axes-legend">' + legend + '</ul></div>';
+
   app.innerHTML =
     '<div class="result-head">' +
     '<div class="level-num">Level ' + res.level + ' of 5</div>' +
     '<h1>' + esc(lvl.name) + '<span class="dot">.</span></h1>' +
     '<p class="lead">' + esc(lvl.desc) + '</p>' +
-    (res.level <= 1 ? '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>' : '') +
+    (path === 'end'
+      ? '<p>That is everything we needed. The rest of the questions assume you have something to compare against, so there is no point asking them.</p>' +
+        '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>'
+      : (res.level <= 1 ? '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>' : '')) +
     '</div>' +
     mountainSVG(res.level, true) +
-    '<h3>Your four dimensions</h3>' +
-    '<div class="radar-row">' + radarSVG(res.axes) + '<ul class="axes-legend">' + legend + '</ul></div>' +
+    radar +
     '<h3>Send your result</h3>' +
     '<p>' + esc(CONFIG.DELIVERY) + ' The line contains your answers and level, nothing else.</p>' +
     '<div class="nav"><button class="btn" id="copyResult">Copy my result</button>' +
