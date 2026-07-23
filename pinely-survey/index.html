@@ -167,75 +167,90 @@ const SCORING_CONFIG = {
   GROUPS: [{ max: 1, name: 'Light' }, { max: 3, name: 'Medium' }, { max: 5, name: 'Advanced' }]
 };
 
-// Диагностические вопросы. Порядок вариантов зафиксирован и намеренно перемешан.
+// Диагностические вопросы.
+//
+// ДВА ПРАВИЛА, КОТОРЫЕ НЕЛЬЗЯ ЛОМАТЬ ПРИ ПРАВКЕ:
+//
+// 1. Порядок вариантов намеренно НЕ по возрастанию балла, и самый дорогой вариант
+//    стоит в разных вопросах на разных позициях (4-й, 2-й, 3-й, 3-й, 4-й, 4-й).
+//    Если отсортировать варианты «по-человечески», анкета превратится в самооценку.
+//
+// 2. Дорогой вариант не должен выглядеть дорого. «Возьму прошлую версию и поменяю
+//    детали» звучит лениво, а стоит 5. Длинный промпт из общих слов звучит солидно,
+//    а стоит 2. Часть вариантов — приманки: звучат правильно и не работают
+//    (попросить AI проверить самого себя; убрать из таблицы только колонку с именами).
+//
 // skipIfNoUse: true — вопрос пропускается у тех, кто AI почти не пользуется.
 const QUESTIONS = [
   {
     id: 'a1',
-    title: 'How would you describe your use of AI tools for work over the past month?',
-    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar. Pick the closest to the truth, even if it is not an exact match.',
+    title: 'Over the past month, which of these actually happened in your work?',
+    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar. If several are true, pick the one that happened most often.',
     options: [
-      { t: 'I use it a few times a week for specific types of tasks, and I know where it helps.', score: 3 },
-      { t: 'I barely use it. Either it does not seem to apply to my work, or I do not know where to start.', score: 0 },
-      { t: 'AI is part of how my team works. I use it myself and I set it up for others.', score: 5 },
-      { t: 'I tried it once or twice, mostly out of curiosity rather than for work.', score: 1 },
-      { t: 'I use it daily, and part of my work is already rebuilt around it: templates, repeatable steps.', score: 4 }
+      { t: 'I reused a request I had written earlier instead of composing a new one.', score: 4 },
+      { t: 'Nothing I worked on involved AI in any way.', score: 0 },
+      { t: 'Something I sent out started as an AI draft that I then reworked.', score: 3 },
+      { t: 'A colleague used a request or a step that I had set up.', score: 5 },
+      { t: 'I opened an AI tool once or twice and went back to doing it my own way.', score: 1 }
     ]
   },
   {
     id: 'a2',
-    title: 'You need to write an email to a vendor who has been missing deadlines for the second month. What would you send to AI?',
+    title: 'A vendor has missed delivery deadlines for the second month and you need to write to them. What would you send to AI?',
     hint: 'Pick the request you would actually type.',
     options: [
+      { t: 'Write a professional, well-structured and persuasive email to a vendor regarding the ongoing situation with delivery delays.', score: 2 },
+      { t: 'I would open the message I sent the last time this happened and change the details.', score: 5 },
       { t: 'Write an email to a vendor about missed deadlines.', score: 1 },
-      { t: 'I have a template for emails like this. I would reuse it and fill in the details.', score: 5 },
-      { t: 'Draft a formal complaint to a supplier listing the breached obligations.', score: 2 },
-      { t: 'You are an office manager. Write an email to a vendor: second month of missed delivery deadlines, we want to keep the relationship but need a firm date. Business tone, firm but polite, under 150 words.', score: 4 }
+      { t: 'You are an office manager. Second month of missed delivery deadlines, we want to keep working with them but need a committed date. Business tone, firm and polite, under 150 words.', score: 4 }
     ]
   },
   {
     id: 'a3',
-    title: 'AI has given you a finished text or calculation that goes straight into a work document. What do you usually do?',
-    hint: 'Checking the output against a source is what we mean by verification here.',
+    title: 'AI has produced a text or a calculation that goes straight into a work document. What happens before you use it?',
+    hint: 'By checking we mean comparing what came back against something you trust.',
     options: [
-      { t: 'I read it through and adjust the wording if something sounds off.', score: 2 },
-      { t: 'I use it as it is. If it reads convincingly, it is probably right.', score: 1 },
-      { t: 'For facts, figures and legal wording I check against the original source. Drafts and ideas I simply edit.', score: 4 },
-      { t: 'I do not use AI for work like this.', score: 0 },
-      { t: 'I have a checklist for each type of task and go through it before anything leaves my hands.', score: 5 }
+      { t: 'I compare figures, names and any legal wording against the source they came from. Wording and structure I just edit.', score: 4 },
+      { t: 'If it reads convincingly, it goes in.', score: 1 },
+      { t: 'I already know which parts of this kind of output tend to be wrong, and those are the parts I look at.', score: 5 },
+      { t: 'I ask it to review its own answer and point out anything it is unsure about.', score: 2 },
+      { t: 'Nothing of mine comes from AI in the first place.', score: 0 },
+      { t: 'I read it through and fix whatever sounds off.', score: 2 }
     ]
   },
   {
     id: 'a4',
     skipIfNoUse: true,
-    title: 'You asked AI for something and the result came out weak or off target. What happens next?',
+    title: 'The answer came back weak or beside the point. What happens next?',
     options: [
-      { t: 'I rephrase the request two or three times, add context, ask for an example.', score: 3 },
-      { t: 'I close the tab. This task is beyond it.', score: 1 },
-      { t: 'This is rare for me, because I describe the task in enough detail up front.', score: 5 },
-      { t: 'I do the task myself. That is faster than explaining it.', score: 1 }
+      { t: 'I rewrite the request, add what I left out, and try again.', score: 3 },
+      { t: 'I finish it by hand. By that point that is faster.', score: 1 },
+      { t: 'I keep the part that worked and redo only the part that went wrong.', score: 5 },
+      { t: 'I take it as a sign this task is a poor fit and move on.', score: 1 }
     ]
   },
   {
     id: 'a5',
-    title: 'You need to analyze a spreadsheet with the team’s salary data before preparing a report. What would you send to AI?',
+    title: 'You need to analyze a spreadsheet of the team’s salary data before writing a report. What would you do?',
     options: [
-      { t: 'Upload the spreadsheet as it is. That is faster.', score: 0 },
-      { t: 'Remove names and exact figures, describe the task on an anonymized example.', score: 3 },
-      { t: 'I have not thought about it. Probably as it is.', score: 1 },
-      { t: 'We have a policy on what data can go where, and I follow it.', score: 5 },
-      { t: 'I do not use AI for tasks like this.', score: 1 }
+      { t: 'I have not really thought about where a file like that can go.', score: 1 },
+      { t: 'I rebuild the question on made-up numbers of the same shape and apply the answer myself.', score: 3 },
+      { t: 'Upload it and ask for the analysis. It stays inside my own chat.', score: 0 },
+      { t: 'I check what our rules allow for a file like this before I do anything with it.', score: 5 },
+      { t: 'Paste the numbers in without the column of names.', score: 1 },
+      { t: 'I would keep AI out of this one entirely.', score: 1 }
     ]
   },
   {
     id: 'a6',
     skipIfNoUse: true,
-    title: 'Do you have saved prompts or templates that you reuse?',
+    title: 'You are about to ask AI for something you have asked before. Where does the request come from?',
     options: [
-      { t: 'I have written templates for specific tasks.', score: 3 },
-      { t: 'No, I write everything from scratch each time.', score: 1 },
-      { t: 'I keep a library of templates, and some colleagues use them too.', score: 5 },
-      { t: 'A couple of phrasings I keep in my head, nothing written down.', score: 2 }
+      { t: 'I roughly remember what worked last time and type it again.', score: 2 },
+      { t: 'From a note where I keep the ones worth keeping.', score: 3 },
+      { t: 'I write it from scratch. It takes a minute.', score: 1 },
+      { t: 'From somewhere my colleagues can pick it up too.', score: 5 },
+      { t: 'I scroll back through my chat history and find the old one.', score: 2 }
     ]
   }
 ];
@@ -374,8 +389,11 @@ const SANDBOX_CHECKS = [
    Конец конфига. Ниже — механика.
    ========================================================================== */
 
-const STORAGE_KEY = 'pinely_ai_survey_progress_v2';
-const DONE_KEY = 'pinely_ai_survey_done_v2';
+// Ключи с версией: в ответах хранятся НОМЕРА вариантов, поэтому после правки
+// порядка вариантов старый сохранённый прогресс означал бы уже другие ответы.
+// Меняешь порядок или состав вариантов — подними v3 на v4.
+const STORAGE_KEY = 'pinely_ai_survey_progress_v3';
+const DONE_KEY = 'pinely_ai_survey_done_v3';
 
 const app = document.getElementById('app');
 const progressEl = document.getElementById('progress');
