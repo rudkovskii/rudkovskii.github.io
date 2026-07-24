@@ -5,1053 +5,558 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,<svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2032%2032%22%20fill=%22%2334A948%22><circle%20cx=%2216.0%22%20cy=%228%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2214%22%20r=%221.7%22/><circle%20cx=%226.8%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%2225.2%22%20cy=%2220%22%20r=%221.7%22/><circle%20cx=%222.2%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%226.8%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2211.4%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2216.0%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2220.6%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2225.2%22%20cy=%2226%22%20r=%221.7%22/><circle%20cx=%2229.8%22%20cy=%2226%22%20r=%221.7%22/></svg>">
 <meta name="robots" content="noindex, nofollow">
-<title>AI-readiness survey</title>
+<title>AI-readiness check</title>
 <style>
 :root{
-  --bg:#FFFFFF;
-  --ink:#000000;
-  --accent:#34A948;
-  --accent-2:#62C584;
-  --line:#E2E2E2;
-  --muted:#5C5C5C;
+  --bg:#FFFFFF; --ink:#000000; --accent:#34A948; --accent-2:#62C584;
+  --line:#E2E2E2; --muted:#5C5C5C;
   --font:Arial,'Helvetica Neue',Helvetica,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:var(--font);
-  font-size:17px;
-  line-height:1.5;
-  -webkit-text-size-adjust:100%;
-}
-.wrap{max-width:720px;margin:0 auto;padding:0 20px 80px}
-.progress{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:14px}
-.progress-track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
-.progress-fill{height:3px;width:0;background:var(--accent);transition:width .25s ease}
-.progress-row{display:flex;align-items:center;gap:14px;margin-top:6px;padding-bottom:6px}
-.progress-label{font-size:13px;color:var(--muted);letter-spacing:.02em}
-.back-link{background:none;border:0;padding:4px 2px;margin:0;color:var(--muted);font-size:13px;line-height:1.2}
-.back-link:hover{color:var(--ink)}
-.back-link:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
-main{padding-top:36px}
-h1{font-size:34px;line-height:1.15;font-weight:700;margin:0 0 18px}
-h2{font-size:25px;line-height:1.25;font-weight:700;margin:0 0 10px}
-h3{font-size:19px;font-weight:700;margin:28px 0 10px}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:660px;margin:0 auto;padding:44px 20px 90px}
+h1{font-size:32px;line-height:1.15;font-weight:700;margin:0 0 14px}
 .dot{color:var(--accent)}
-p{margin:0 0 14px}
-.lead{font-size:19px}
-.muted{color:var(--muted);font-size:15px}
-.note{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:22px 0;font-size:15px;color:var(--muted)}
-.note p:last-child{margin-bottom:0}
-.opts{list-style:none;margin:22px 0 0;padding:0}
-.opts li{margin:0 0 10px}
-.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+.disclaimer{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:20px 0 36px;font-size:15px;color:var(--muted)}
+.optional{font-size:15px;color:var(--muted);margin:0 0 30px}
+.q{margin:0 0 34px;padding:0}
+.q[hidden]{display:none}
+.q h2{font-size:20px;line-height:1.3;font-weight:700;margin:0 0 6px}
+.q .req{color:var(--accent);font-weight:700}
+.q .note{font-size:15px;color:var(--muted);margin:0 0 14px}
+.opts{list-style:none;margin:14px 0 0;padding:0}
+.opts li{margin:0 0 9px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:13px 15px;cursor:pointer;transition:border-color .15s,background .15s}
 .opt:hover{border-color:var(--accent-2)}
-.opt input{margin:3px 0 0;width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
+.opt input{margin:2px 0 0;width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
 .opt.checked{border-color:var(--accent);background:rgba(52,169,72,.05)}
 .opt:focus-within{outline:2px solid var(--accent);outline-offset:2px}
 .opt span{flex:1}
-label.field{display:block;font-weight:700;margin:0 0 8px}
+.opt[hidden]{display:none}
+.custom-row{margin-top:8px}
+.custom-row[hidden]{display:none}
+label.field{display:block;font-weight:700;margin:0 0 8px;font-size:17px}
 select,input[type=text],textarea{
   width:100%;font-family:var(--font);font-size:17px;color:var(--ink);
   border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;
 }
 select:focus,input[type=text]:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
-textarea{min-height:150px;resize:vertical;line-height:1.45}
+textarea{min-height:120px;resize:vertical;line-height:1.45}
 .counter{font-size:13px;color:var(--muted);margin-top:6px;text-align:right}
-.nav{display:flex;gap:12px;align-items:center;margin-top:34px;flex-wrap:wrap}
+.submit{border-top:1px solid var(--line);margin-top:14px;padding-top:26px}
+.nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 button{font-family:var(--font);font-size:16px;cursor:pointer}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:100px;padding:13px 30px;font-weight:700}
 .btn:hover{background:var(--accent-2)}
 .btn:disabled{background:#CFCFCF;cursor:not-allowed}
-.btn:focus-visible,.btn-ghost:focus-visible,.rank-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btn:focus-visible,.btn-ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .btn-ghost{background:transparent;border:1px solid var(--line);border-radius:100px;padding:12px 22px;color:var(--ink)}
 .btn-ghost:hover{border-color:var(--ink)}
-.rank{list-style:none;margin:22px 0 0;padding:0;counter-reset:r}
-.rank li{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 8px;background:#fff}
-.rank li.top{border-color:var(--accent);background:rgba(52,169,72,.05)}
-.rank li.dragging{opacity:.4}
-.rank .num{width:24px;flex:0 0 auto;font-weight:700;color:var(--muted);text-align:center}
-.rank li.top .num{color:var(--accent)}
-.rank .txt{flex:1;cursor:grab}
-.rank-btns{display:flex;gap:6px;flex:0 0 auto}
-.rank-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:100px;background:#fff;line-height:1;font-size:15px}
-.rank-btn:hover{border-color:var(--ink)}
-.result-head{margin-bottom:6px}
-.level-num{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.mountain{width:100%;height:auto;display:block;margin:26px 0 6px}
-.radar-row{display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.radar-row svg{flex:0 0 auto}
-.axes-legend{list-style:none;margin:0;padding:0;font-size:15px;min-width:240px;flex:1}
-.axes-legend li{margin:0 0 10px}
-.axes-legend b{display:block}
-.payload{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
-footer{border-top:1px solid var(--line);margin-top:60px;padding-top:18px;font-size:13px;color:var(--muted)}
-.hero-bg{margin:0 0 8px}
+.status{margin-top:14px;font-size:15px;color:var(--muted)}
+.payload{width:100%;min-height:96px;margin-top:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all}
+.thanks{margin-top:26px;padding:22px;border:1px solid var(--accent);border-radius:16px;background:rgba(52,169,72,.05)}
+.thanks[hidden]{display:none}
+.thanks h2{margin:0 0 8px;font-size:22px}
+.thanks p{margin:0;color:var(--muted);font-size:15px}
+.langbar{display:flex;justify-content:flex-end;gap:8px;margin-bottom:18px}
+.langbtn{background:none;border:0;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:6px}
+.langbtn.active{color:var(--ink);font-weight:700}
+.langbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:18px;font-size:13px;color:var(--muted)}
 @media (max-width:520px){
   body{font-size:16px}
-  h1{font-size:27px}
-  h2{font-size:21px}
-  .wrap{padding:0 16px 60px}
+  h1{font-size:26px}
+  .q h2{font-size:19px}
+  .wrap{padding:32px 16px 70px}
   .nav .btn,.nav .btn-ghost{flex:1;text-align:center}
-  .radar-row{gap:14px}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="progress" id="progress" hidden>
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-row">
-      <button type="button" class="back-link" id="progressBack">&#8592; Back</button>
-      <div class="progress-label" id="progressLabel"></div>
-    </div>
-  </div>
-  <main id="app"></main>
-  <footer>AI-readiness survey · prepared by Dmitrii Rudkovskii for the Pinely back-office program</footer>
+  <div class="langbar" id="langbar"></div>
+  <header id="head"></header>
+  <form id="form" autocomplete="off"></form>
+  <div class="submit" id="submit"></div>
+  <div class="thanks" id="thanks" hidden></div>
+  <footer id="footer"></footer>
 </div>
 
 <script>
 /* ==========================================================================
    КОНФИГ — правится без программиста.
-   Меняешь текст в кавычках: список команд, вопросы, варианты, подписи.
-   Баллы (score) трогать только вместе с разделом SCORING_CONFIG.
+   Все видимые строки — двуязычные: { e: 'English', r: 'Русский' }.
+   LANG выбирает язык по умолчанию; человек может переключить кнопкой сверху.
+   Меняешь текст только внутри кавычек. id (слева от текста) не трогать —
+   по ним собирается выгрузка.
    ========================================================================== */
 
 const CONFIG = {
-  // Блокировки повторного прохождения нет: анкету можно пройти сколько угодно раз.
-  // На экране результата есть кнопка «Take the survey again».
+  LANG: 'en',                  // язык по умолчанию: 'en' | 'ru'
 
-  // Список команд в выпадающем списке. Других вариантов нет: если человек
-  // из команды, которой тут не хватает, — добавь её сюда, а не полагайся
-  // на свободное поле, иначе выгрузка расползётся по вариантам написания.
-  TEAMS: ['Finance', 'HR', 'Legal Compliance & Tax', 'Market Setup Operations', 'Regional Directors'],
+  SHOW_TRUST_FOR_NEVER: true,  // показывать вопрос про доверие тем, кто не пользуется AI
 
-  // Конкретных дат в анкете нет намеренно: даты воркшопов и хакатона сдвигаются,
-  // а разосланная ссылка живёт своей жизнью и протухшую дату никто не поправит.
-  // Говорим «the workshops», «the hackathon» — без чисел.
+  // Куда человек относит строку с ответами. Префикс строки — PINELY2- (тот же,
+  // что читает decode.html). Если меняешь префикс, поменяй его и в decode.html.
+  PAYLOAD_PREFIX: 'PINELY2-',
 
-  // Куда человек относит строку с результатом.
-  DELIVERY: 'Send this line to Dmitrii in a direct message on Slack.',
+  // Команды. Порядок как в списке. id (слева) в выгрузке, менять нельзя.
+  TEAMS: [
+    { id: 'admin_travel', e: 'Administrative Department and Travel', r: 'Административный отдел и командировки' },
+    { id: 'finance',      e: 'Finance',                              r: 'Финансы' },
+    { id: 'hr',           e: 'HR',                                   r: 'HR' },
+    { id: 'legal',        e: 'Legal Compliance & Tax',               r: 'Комплаенс и налоги' },
+    { id: 'market_setup', e: 'Market Setup Operations',              r: 'Market Setup Operations' },
+    { id: 'regional',     e: 'Regional Directors',                   r: 'Региональные директора' }
+  ],
 
-  // Честное время прохождения. Оно разное: первый вопрос делит людей на три
-  // маршрута, и тот, кто AI не пользуется, доходит до конца за минуту.
-  DURATION_TEXT: 'about 7 minutes, and less if AI is not part of your work',
+  // Ветвление по ответу на Q2 (частота). Список — какие вопросы показать.
+  // Пустой ключ '' — дефолт, если частоту пропустили (показываем всё).
+  BRANCHES: {
+    never:     ['q3'],
+    rarely:    ['q3', 'q4', 'q6', 'q7'],
+    regularly: ['q3', 'q4', 'q5', 'q6', 'q7'],
+    daily:     ['q3', 'q4', 'q5', 'q6', 'q7'],
+    '':        ['q3', 'q4', 'q5', 'q6', 'q7']
+  },
+  // Короткая ветка: тут прячется пункт agents в Q6 (см. hideInShort у варианта).
+  SHORT_FREQ: 'rarely',
 
-  // Префикс строки результата. Меняй, только если поменяешь его же в decode.html.
-  PAYLOAD_PREFIX: 'PINELY2-'
+  // UI-строки (не вопросы).
+  STRINGS: {
+    h1:          { e: 'A few questions about AI', r: 'Несколько вопросов про AI' },
+    disclaimer:  { e: 'Runs entirely in your browser — nothing is sent automatically. Please keep the free-text field general: no client names, deal figures, or personal data.',
+                   r: 'Работает целиком в вашем браузере — ничего не отправляется автоматически. Держите свободное поле в общих словах: без имён клиентов, цифр по сделкам и персональных данных.' },
+    optional:    { e: 'Only your team and how often you use AI are needed. Everything else you can skip.',
+                   r: 'Обязательны только команда и частота использования AI. Остальное можно пропустить.' },
+    teamLabel:   { e: 'Team', r: 'Команда' },
+    teamPlaceholder: { e: 'Select your team', r: 'Выберите команду' },
+    required:    { e: 'required', r: 'обязательно' },
+    customLabel: { e: 'Something else', r: 'Другое' },
+    customPlaceholder: { e: 'Type here — separate several with commas', r: 'Впишите здесь — несколько через запятую' },
+    copyBtn:     { e: 'Copy my answers', r: 'Скопировать мои ответы' },
+    copyHint:    { e: 'It contains your answers only.', r: 'В ней только ваши ответы.' },
+    showLine:    { e: 'Show the line', r: 'Показать строку' },
+    selectHint:  { e: 'Click the box, then copy it manually.', r: 'Кликните по полю и скопируйте вручную.' },
+    copied:      { e: 'Copied. Paste this line into the survey thread in Slack.', r: 'Скопировано. Вставьте эту строку в тред опроса в Slack.' },
+    copyFail:    { e: 'Copying was blocked by the browser. Use the box below.', r: 'Копирование заблокировал браузер. Скопируйте из поля ниже.' },
+    thanksTitle: { e: 'Thanks for taking this — that is everything.', r: 'Спасибо, это всё.' },
+    thanksNote:  { e: 'More about the workshops will follow in Slack.', r: 'Подробнее о воркшопах будет в Slack.' },
+    footer:      { e: 'AI-readiness check · prepared by Dmitrii Rudkovskii for Pinely', r: 'AI-readiness check · подготовил Дмитрий Рудковский для Pinely' }
+  },
+
+  // Вопросы. kind: 'select' | 'radio' | 'checkbox' | 'text'.
+  // Порядок вариантов в одиночном выборе намеренно перемешан (не по нарастанию).
+  QUESTIONS: [
+    {
+      id: 'q2', field: 'freq', kind: 'radio', required: true,
+      title: { e: 'How often do you use AI tools — for work or your own things?', r: 'Как часто вы пользуетесь AI-инструментами — по работе или для своего?' },
+      note:  { e: 'Claude, ChatGPT, Gemini, Copilot and the like.', r: 'Claude, ChatGPT, Gemini, Copilot и подобные.' },
+      options: [
+        { id: 'rarely',    e: 'Rarely: I tried it a couple of times, it did not stick', r: 'Редко: пробовал пару раз, не прижилось' },
+        { id: 'daily',     e: 'Every day, or almost',                                    r: 'Каждый день или почти' },
+        { id: 'never',     e: 'I have never used them',                                  r: 'Никогда не пользовался' },
+        { id: 'regularly', e: 'Regularly: a few times a week',                           r: 'Регулярно: несколько раз в неделю' }
+      ]
+    },
+    {
+      id: 'q3', field: 'trust', kind: 'radio',
+      title: { e: 'How much do you trust AI with your work?', r: 'Насколько вы доверяете AI рабочие задачи?' },
+      options: [
+        { id: 'small',           e: 'Only for small things, and I still double-check', r: 'Только мелочи, и всё равно перепроверяю' },
+        { id: 'everywhere',      e: 'I think it can be used almost anywhere',          r: 'Думаю, его можно применять почти везде' },
+        { id: 'none',            e: 'I do not think it can be trusted with anything',  r: 'Не думаю, что ему можно доверять хоть что-то' },
+        { id: 'lots_with_check', e: 'For quite a lot, as long as I check the result',  r: 'Многое, если проверяю результат' }
+      ]
+    },
+    {
+      id: 'q4', field: 'terms', kind: 'checkbox',
+      title: { e: 'Which of these do you understand?', r: 'Что из этого вам понятно?' },
+      note:  { e: 'Tick the ones that are clear to you.', r: 'Отметьте то, что вам ясно.' },
+      options: [
+        { id: 'prompt',         e: 'Prompt',                                                     r: 'Промпт' },
+        { id: 'context',        e: 'Context (what the AI already knows in a chat)',              r: 'Контекст (что AI уже знает в чате)' },
+        { id: 'hallucination',  e: 'Hallucination (when AI makes something up)',                 r: 'Галлюцинация (когда AI выдумывает)' },
+        { id: 'token',          e: 'Token / context window',                                     r: 'Токен / контекстное окно' },
+        { id: 'agent',          e: 'The difference between a chatbot and an agent',              r: 'Разница между чат-ботом и агентом' },
+        { id: 'system_prompt',  e: 'System prompt / custom instructions',                        r: 'Системный промпт / кастомные инструкции' },
+        { id: 'knowledge_base', e: 'Knowledge base / connecting AI to your own documents',       r: 'База знаний / подключение AI к своим документам' },
+        { id: 'none',           e: 'None of these yet', r: 'Пока ничего из этого', resetsOthers: true }
+      ]
+    },
+    {
+      id: 'q5', field: 'uses', kind: 'checkbox', custom: true,
+      title: { e: 'What do you already use AI for at work?', r: 'Для чего вы уже используете AI на работе?' },
+      options: [
+        { id: 'emails',        e: 'Emails and correspondence',            r: 'Письма и переписка' },
+        { id: 'documents',     e: 'Drafting and reviewing documents',     r: 'Черновики и вычитка документов' },
+        { id: 'meeting_notes', e: 'Meeting notes and summaries',          r: 'Заметки и саммари встреч' },
+        { id: 'research',      e: 'Finding and cross-checking information', r: 'Поиск и перепроверка информации' },
+        { id: 'presentations', e: 'Presentations and reports',            r: 'Презентации и отчёты' },
+        { id: 'spreadsheets',  e: 'Spreadsheets and calculations',        r: 'Таблицы и расчёты' },
+        { id: 'scheduling',    e: 'Planning and scheduling',              r: 'Планирование и расписание' },
+        { id: 'translation',   e: 'Translation and proofreading',         r: 'Перевод и вычитка' },
+        { id: 'templates',     e: 'Routine documents from templates',     r: 'Типовые документы из шаблонов' },
+        { id: 'vendors',       e: 'Vendor and counterparty communication', r: 'Общение с вендорами и контрагентами' },
+        { id: 'none',          e: 'Not for any of these yet', r: 'Пока ни для чего из этого', resetsOthers: true }
+      ]
+    },
+    {
+      id: 'q6', field: 'interests', kind: 'checkbox', custom: true,
+      title: { e: 'What would you be curious to set up with AI?', r: 'Что вам было бы интересно настроить с помощью AI?' },
+      options: [
+        { id: 'drafts',     e: 'Getting drafts and emails out faster',        r: 'Быстрее выпускать черновики и письма' },
+        { id: 'numbers',    e: 'Making sense of spreadsheets and numbers',    r: 'Разбираться с таблицами и цифрами' },
+        { id: 'meetings',   e: 'Prepping for meetings and capturing notes',   r: 'Готовиться к встречам и записывать их' },
+        { id: 'find',       e: 'Finding and double-checking information',     r: 'Искать и перепроверять информацию' },
+        { id: 'templates',  e: 'Templates for things you do again and again', r: 'Шаблоны для того, что делаешь снова и снова' },
+        { id: 'automation', e: 'Connecting it to Slack and Google tools',     r: 'Подключить к Slack и Google-инструментам' },
+        { id: 'agents',     e: 'Small tools that run a task for you', r: 'Маленькие инструменты, которые выполняют задачу за вас', hideInShort: true },
+        { id: 'safety',     e: 'Knowing what is safe to put in',              r: 'Понимать, что безопасно туда закладывать' }
+      ]
+    },
+    {
+      id: 'q7', field: 'own_text', kind: 'text', maxlength: 300,
+      title: { e: 'What would be interesting to try with AI? Tell us in your own words.', r: 'Что было бы интересно попробовать с AI? Расскажите своими словами.' },
+      note:  { e: 'Keep it general — no internal data.', r: 'Держите в общих словах — без внутренних данных.' },
+      placeholder: { e: 'Optional', r: 'Необязательно' }
+    }
+  ]
 };
-
-const SCORING_CONFIG = {
-  // Итоговый уровень = медиана баллов диагностических вопросов, округление вниз.
-  // Safety gate: балл по вопросу о данных <= порога — уровень не выше потолка.
-  SAFETY_GATE: { question: 'a5', threshold: 1, cap: 2 },
-  // Ложная продвинутость: верификация ниже остальных на этот разрыв — минус уровень.
-  FALSE_CONFIDENCE: { question: 'a3', gap: 2, penalty: 1 },
-  // Если по частоте использования 0 — уровень 0 независимо от остального.
-  ZERO_USE: { question: 'a0', value: 0 },
-  MAX_LEVEL: 5,
-  // Оси радара: из каких вопросов считается каждая (среднее, округление вниз).
-  // label — подпись в списке под радаром, short — короткая подпись на самом радаре.
-  // Вопросы, которых на коротком пути не было, в расчёт оси просто не попадают.
-  AXES: {
-    prompting:    { label: 'Prompting',          short: 'Prompting', hint: 'How completely you describe the task', from: ['a2'] },
-    verification: { label: 'Checking results',   short: 'Checking',  hint: 'Whether you verify output before using it', from: ['a3'] },
-    systemic:     { label: 'Habits & templates', short: 'Habits',    hint: 'Whether AI is part of your regular work', from: ['a0', 'a1', 'a6'] },
-    results:      { label: 'Real outcomes',      short: 'Outcomes',  hint: 'Whether it reliably produces usable work', from: ['a4', 'a5'] }
-  },
-  // Группы обучения. Участнику не показываются, идут только в выгрузку.
-  GROUPS: [{ max: 1, name: 'Light' }, { max: 3, name: 'Medium' }, { max: 5, name: 'Advanced' }]
-};
-
-// Диагностические вопросы.
-//
-// ТРИ ПРАВИЛА, КОТОРЫЕ НЕЛЬЗЯ ЛОМАТЬ ПРИ ПРАВКЕ:
-//
-// 0. Сценарий вопроса должен быть узнаваем в ЛЮБОЙ команде. Зарплатная таблица —
-//    это HR и финансы, договор — это Legal: на таком вопросе остальные отвечают
-//    про воображаемую чужую работу, и замер разваливается. Формулируй через то,
-//    что есть у всех: файл с внутренними деталями, сорванный срок, чужой драфт.
-//
-// 1. Порядок вариантов намеренно НЕ по возрастанию балла, и самый дорогой вариант
-//    стоит в разных вопросах на разных позициях. Если отсортировать варианты
-//    «по-человечески», анкета превратится в самооценку.
-//
-//    ДВА ИСКЛЮЧЕНИЯ — a0 и a1. Это вопросы про себя, а не ситуации: у них
-//    варианты лежат на одной шкале, и спрятанная шкала делает вопрос
-//    нечитаемым («не понял, про что это»). Там порядок естественный, и человек
-//    прямо выбирает своё место. Разделительную работу тянут ситуационные
-//    вопросы a2, a3, a5 — вот их сортировать нельзя ни в коем случае.
-//
-// 2. Дорогой вариант не должен выглядеть дорого. «Возьму прошлую версию и поменяю
-//    детали» звучит лениво, а стоит 5. Длинный промпт из общих слов звучит солидно,
-//    а стоит 2. Часть вариантов — приманки: звучат правильно и не работают
-//    (попросить AI проверить самого себя; убрать из таблицы только колонку с именами).
-//
-// paths — на каких маршрутах вопрос показывается. Маршрут задаёт ПЕРВЫЙ вопрос a0:
-//   'end'   — «никогда»: анкета заканчивается сразу, дальше спрашивать нечего
-//   'light' — «редко»: короткая версия, только то, на что человек может ответить
-//   'full'  — «регулярно/постоянно»: всё
-// Вопрос без поля paths показывается на всех маршрутах.
-const QUESTIONS = [
-  {
-    id: 'a0',
-    // ЕДИНСТВЕННЫЙ вопрос, где варианты идут естественным порядком (никогда → постоянно).
-    // Он не ловит и не разделяет, он маршрутизирует: тут понятность важнее хитрости.
-    // route на варианте задаёт маршрут, см. комментарий выше.
-    title: 'How often do you use AI tools, for work or for anything of your own?',
-    hint: 'ChatGPT, Claude, Gemini, Copilot or anything similar.',
-    options: [
-      { t: 'Never. I have not used them.', score: 0, route: 'end' },
-      { t: 'Rarely. I have tried them a few times, and it has not stuck.', score: 1, route: 'light' },
-      { t: 'Regularly. A few times a week.', score: 3, route: 'full' },
-      { t: 'Constantly. Most working days.', score: 5, route: 'full' }
-    ]
-  },
-  {
-    id: 'a1',
-    paths: ['full'],
-    // Частоту уже спросили в a0, здесь меряется, как далеко AI прошёл внутрь работы:
-    // остаётся при человеке -> попадает в то, что уходит другим -> закрепляется
-    // в повторяющихся задачах -> расходится на коллег. Шкала одна и видна, иначе
-    // варианты читаются как четыре несравнимых события (так и было в первой версии).
-    // Вариантов «ничего не было» и «открыл пару раз» тут нет намеренно: человек,
-    // который двумя экранами раньше сказал «регулярно», не может их выбрать честно.
-    title: 'How far has AI got into your work?',
-    hint: 'More than one may be true. Pick the one that goes furthest.',
-    options: [
-      { t: 'I ask it things now and then, and whatever comes back stays with me.', score: 2 },
-      { t: 'Work that goes to other people sometimes starts as an AI draft.', score: 3 },
-      { t: 'A few of my recurring tasks now go through it the same way every time.', score: 4 },
-      { t: 'Other people use something I set up with AI.', score: 5 }
-    ]
-  },
-  {
-    paths: ['full', 'light'],
-    id: 'a2',
-    title: 'Something you were promised has slipped for the second time, and you have to write to the person responsible. What would you send to AI?',
-    hint: 'Pick the request you would actually type.',
-    options: [
-      { t: 'Write a professional, well-structured and persuasive message about the ongoing situation with the delays.', score: 2 },
-      { t: 'I would open the message I sent the last time this happened and change the details.', score: 5 },
-      { t: 'Write an email about a missed deadline.', score: 1 },
-      { t: 'I am writing on behalf of my team. Second time this date has slipped, we want to keep working together and need a date they will commit to. Business tone, firm and polite, under 150 words.', score: 4 }
-    ]
-  },
-  {
-    id: 'a3',
-    paths: ['full', 'light'],
-    title: 'AI has produced something that goes straight into your work: a text, a set of numbers, a summary. What happens before you use it?',
-    hint: 'By checking we mean comparing what came back against something you trust.',
-    options: [
-      { t: 'I compare names, dates, figures and anything binding against the source they came from. Wording and structure I just edit.', score: 4 },
-      { t: 'If it reads convincingly, it goes in.', score: 1 },
-      { t: 'I already know which parts of this kind of output tend to be wrong, and those are the parts I look at.', score: 5 },
-      { t: 'I ask it to review its own answer and point out anything it is unsure about.', score: 2 },
-      { t: 'I do not let AI near anything that goes into a work document.', score: 0 },
-      { t: 'I read it through and fix whatever sounds off.', score: 2 }
-    ]
-  },
-  {
-    id: 'a4',
-    paths: ['full'],
-    title: 'The answer came back weak or beside the point. What happens next?',
-    options: [
-      { t: 'I rewrite the request, add what I left out, and try again.', score: 3 },
-      { t: 'I finish it by hand. By that point that is faster.', score: 1 },
-      { t: 'I keep the part that worked and redo only the part that went wrong.', score: 5 },
-      { t: 'I take it as a sign this task is a poor fit and move on.', score: 1 }
-    ]
-  },
-  {
-    id: 'a5',
-    paths: ['full', 'light'],
-    title: 'You want help with a work file that carries internal detail: people’s names, internal figures, wording from an agreement. What would you do?',
-    options: [
-      { t: 'I have not really thought about where a file like that can go.', score: 1 },
-      { t: 'I rebuild the question on made-up detail of the same shape and apply the answer to the real thing myself.', score: 3 },
-      { t: 'Upload it and ask. It stays inside my own chat.', score: 0 },
-      { t: 'I check what our rules allow for this kind of file before I do anything with it.', score: 5 },
-      { t: 'Take out the names and send the rest.', score: 1 },
-      { t: 'I keep AI away from anything internal.', score: 1 }
-    ]
-  },
-  {
-    id: 'a6',
-    paths: ['full'],
-    title: 'You are about to ask AI for something you have asked before. Where does the request come from?',
-    options: [
-      { t: 'I roughly remember what worked last time and type it again.', score: 2 },
-      { t: 'From a note where I keep the ones worth keeping.', score: 3 },
-      { t: 'I write it from scratch. It takes a minute.', score: 1 },
-      { t: 'From somewhere my colleagues can pick it up too.', score: 5 },
-      { t: 'I scroll back through my chat history and find the old one.', score: 2 }
-    ]
-  }
-];
-
-// Карта задач. id менять нельзя — по ним собирается выгрузка.
-const TASKS = [
-  { id: 'emails',         t: 'Emails and correspondence' },
-  { id: 'documents',      t: 'Drafting and reviewing documents' },
-  { id: 'meeting_notes',  t: 'Meeting notes and summaries' },
-  { id: 'research',       t: 'Finding and cross-checking information' },
-  { id: 'presentations',  t: 'Presentations and reports' },
-  { id: 'spreadsheets',   t: 'Spreadsheets and calculations' },
-  { id: 'scheduling',     t: 'Planning and scheduling' },
-  { id: 'translation',    t: 'Translation and proofreading' },
-  { id: 'templates',      t: 'Routine documents from templates' },
-  { id: 'internal_comms', t: 'Internal announcements and instructions' },
-  { id: 'vendors',        t: 'Vendor and counterparty communication' }
-];
-
-// id менять нельзя — по ним собирается выгрузка. Текст правь свободно.
-const BLOCKERS = [
-  { id: 'no_start',     t: 'I would not know where to start' },
-  { id: 'data_rules',   t: 'I am not sure what our rules allow' },
-  { id: 'disappointed', t: 'I tried, and what came back was not usable' },
-  { id: 'no_time',      t: 'Working it out takes time I do not have' },
-  { id: 'no_fit',       t: 'My work does not look like something it could do' },
-  { id: 'go_deeper',    t: 'Nothing really. I use it as much as I want to' },
-  { id: 'other',        t: 'Something else', other: true }
-];
-
-const INTERESTS = [
-  { id: 'documents',   t: 'Getting drafts and emails out faster' },
-  { id: 'spreadsheets', t: 'Working through spreadsheets and numbers' },
-  { id: 'meetings',    t: 'Preparing for meetings and writing them up' },
-  { id: 'research',    t: 'Finding information and cross-checking it' },
-  { id: 'templates',   t: 'Templates for the things you do over and over' },
-  { id: 'automation',  t: 'Wiring it into Slack and the Google tools' },
-  { id: 'agents',      t: 'Small tools that run a task on their own', paths: ['full'] },
-  { id: 'data_rules',  t: 'Knowing what is safe to put in' }
-];
-
-const HACKATHON = [
-  { id: 'yes_have_case', t: 'Yes, I have one in mind' },
-  { id: 'yes_need_help', t: 'Yes, but I would need help picking one' },
-  { id: 'watching',      t: 'I will watch from the sidelines first' }
-];
-
-// Уровни: название и описание одним предложением. Рекомендаций на экране
-// результата больше нет — анкета замеряет, а не учит.
-const LEVELS = [
-  { name: 'Skeptic',      desc: 'AI has no place in your work yet, or it has not earned your trust.' },
-  { name: 'Observer',     desc: 'You have seen what AI can do and tried it, and it has not entered your working week yet.' },
-  { name: 'Experimenter', desc: 'You reach for AI now and then, and the quality of what comes back swings.' },
-  { name: 'Practitioner', desc: 'You have tasks where AI reliably helps, you give it context and you check what comes back.' },
-  { name: 'Integrator',   desc: 'AI sits inside your workflow through templates and repeatable steps, and your colleagues benefit from it.' },
-  { name: 'Transformer',  desc: 'You rebuild how your team works around AI and you set the standard others follow.' }
-];
-
-// Признаки, по которым молча оценивается промпт из песочницы: сколько нашлось —
-// столько и sandbox_score (0-6) в выгрузке. Человеку разбор НЕ показывается.
-const SANDBOX_CHECKS = [
-  { id: 'role',
-    re: /\b(you are|act as|as an?|i work|i am an?|i'm an?|my role|imagine you)\b/i },
-  { id: 'audience',
-    re: /\b(my (manager|boss|lead|director|team|colleague)|the (team|client|board|management)|leadership|for a client|audience)\b/i },
-  { id: 'format',
-    re: /\b(list|table|bullet|bullets|paragraph|points|summary of|format|structure|columns|numbered)\b/i },
-  { id: 'constraints',
-    re: /(\b(no more than|under|at most|max|maximum|within|brief|short|concise|keep it)\b|\b\d{2,4}\s*(words|characters|sentences|bullets|points|lines)\b)/i },
-  { id: 'example',
-    re: /\b(for example|for instance|like this|here'?s a sample|sample|following this format|similar to|template)\b/i },
-  { id: 'detail',
-    test: function (s) { return s.trim().length >= 40; } }
-];
 
 /* ==========================================================================
    Конец конфига. Ниже — механика.
    ========================================================================== */
 
-// Ключи с версией: в ответах хранятся НОМЕРА вариантов, поэтому после правки
-// порядка вариантов старый сохранённый прогресс означал бы уже другие ответы.
-// Меняешь порядок или состав вариантов — подними v3 на v4.
-const STORAGE_KEY = 'pinely_ai_survey_progress_v4';
+const STORAGE_KEY = 'pinely_survey_simple_v1';
 
-const app = document.getElementById('app');
-const progressEl = document.getElementById('progress');
-const progressFill = document.getElementById('progressFill');
-const progressLabel = document.getElementById('progressLabel');
-const progressBack = document.getElementById('progressBack');
-
-// Кнопка «назад» в липкой шапке: на длинных вопросах нижняя кнопка уезжает
-// за экран, и без этой человек считает, что вернуться нельзя.
-progressBack.onclick = goBack;
-
-function goBack() {
-  if (state.screen > 0) { state.screen--; render(); }
-}
-
+let LANG = CONFIG.LANG;
 let state = {
-  answers: {},        // a1..a6 -> option index
-  team: '',
-  tasks: [],
-  tasksNone: false,
-  order: null,        // порядок карточек в вопросе про поглотители времени
-  pain: '',
-  sandbox: '',
-  blockers: [],
-  blockerOther: '',
-  interests: [],
-  hackathon: '',
-  startedAt: null,
-  screen: 0
+  team: '', freq: '', trust: '',
+  terms: [], uses: [], interests: [],
+  uses_custom: '', interests_custom: '',
+  own_text: '',
+  startedAt: null
 };
 
+function tt(x) { return x == null ? '' : (typeof x === 'string' ? x : (LANG === 'ru' ? (x.r || x.e) : x.e)); }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function S(key) { return tt(CONFIG.STRINGS[key]); }
+function qById(id) { return CONFIG.QUESTIONS.filter(function (q) { return q.id === id; })[0]; }
+
 function save() {
-  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ lang: LANG, state: state })); } catch (e) {}
 }
 function load() {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (raw) state = Object.assign(state, JSON.parse(raw));
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (parsed.lang) LANG = parsed.lang;
+    if (parsed.state) state = Object.assign(state, parsed.state);
   } catch (e) {}
 }
-// Полный сброс: используется кнопкой «пройти заново» на экране результата.
-function resetSurvey() {
-  state = {
-    answers: {}, team: '', tasks: [], tasksNone: false, order: null,
-    pain: '', sandbox: '', blockers: [], blockerOther: '', interests: [],
-    hackathon: '', startedAt: null, screen: 0
-  };
-  try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
-  render();
-}
 
-function q(id) { return QUESTIONS.filter(function (x) { return x.id === id; })[0]; }
-function scoreOf(id) {
-  const idx = state.answers[id];
-  if (idx === undefined || idx === null) return null;
-  return q(id).options[idx].score;
-}
-// Маршрут целиком выводится из ответа на a0 и нигде не хранится отдельно:
-// человек может вернуться назад и переставить ответ, и всё пересоберётся само.
-function currentPath() {
-  const idx = state.answers.a0;
-  if (idx === undefined || idx === null) return 'full';
-  return q('a0').options[idx].route;
-}
-function onPath(item) {
-  return !item.paths || item.paths.indexOf(currentPath()) >= 0;
-}
+function isShort() { return state.freq === CONFIG.SHORT_FREQ; }
 
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, function (c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-  });
-}
-
-/* ---------- набор экранов ---------- */
-
-function buildScreens() {
-  const path = currentPath();
-  const s = [{ type: 'intro' }, { type: 'team' }, { type: 'single', q: q('a0') }];
-
-  // «Никогда» — дальше спрашивать нечего: всё остальное предполагает опыт,
-  // которого у человека нет. Сразу к результату, строку он всё равно присылает,
-  // иначе эти люди пропадут из выгрузки, а это и есть группа Light.
-  if (path === 'end') {
-    s.push({ type: 'result' });
-    return s;
+// Список вопросов, видимых при текущей частоте.
+function visibleQuestionIds() {
+  let branch = CONFIG.BRANCHES[state.freq];
+  if (!branch) branch = CONFIG.BRANCHES[''];
+  branch = branch.slice();
+  if (state.freq === 'never' && !CONFIG.SHOW_TRUST_FOR_NEVER) {
+    branch = branch.filter(function (id) { return id !== 'q3'; });
   }
-
-  QUESTIONS.forEach(function (question) {
-    if (question.id === 'a0') return;
-    if (onPath(question)) s.push({ type: 'single', q: question });
-  });
-  s.push({ type: 'tasks' });
-  if (path === 'full') s.push({ type: 'rank' });      // перетаскивание — самый тяжёлый экран
-  s.push({ type: 'pain' });
-  if (path === 'full') s.push({ type: 'sandbox' });   // писать промпт тому, кто их не пишет, бессмысленно
-  s.push({ type: 'expectations' });
-  s.push({ type: 'hackathon' });
-  s.push({ type: 'result' });
-  return s;
+  return branch;
 }
 
-/* ---------- скоринг ---------- */
-
-function median(arr) {
-  if (!arr.length) return 0;
-  const a = arr.slice().sort(function (x, y) { return x - y; });
-  const mid = Math.floor(a.length / 2);
-  return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
-}
-
-function computeResult() {
-  const scores = {};
-  QUESTIONS.forEach(function (question) {
-    // Только вопросы текущего маршрута. Иначе человек, который прошёл половину
-    // полной версии, вернулся на a0 и переставил ответ на «никогда», утащил бы
-    // в скоринг ответы с экранов, которых на его маршруте уже нет.
-    if (!onPath(question)) return;
-    const v = scoreOf(question.id);
-    if (v !== null) scores[question.id] = v;
-  });
-  const values = Object.keys(scores).map(function (k) { return scores[k]; });
-  let level = Math.floor(median(values));
-  const flags = { false_confidence: false, safety_gate: false };
-
-  // Ложная продвинутость: верификация заметно ниже остального.
-  const fc = SCORING_CONFIG.FALSE_CONFIDENCE;
-  if (scores[fc.question] !== undefined) {
-    const others = Object.keys(scores)
-      .filter(function (k) { return k !== fc.question; })
-      .map(function (k) { return scores[k]; });
-    if (others.length && median(others) - scores[fc.question] >= fc.gap) {
-      flags.false_confidence = true;
-      level = Math.max(0, level - fc.penalty);
-    }
-  }
-  // Safety gate.
-  const sg = SCORING_CONFIG.SAFETY_GATE;
-  if (scores[sg.question] !== undefined && scores[sg.question] <= sg.threshold) {
-    flags.safety_gate = true;
-    level = Math.min(level, sg.cap);
-  }
-  // Нулевое использование.
-  const zu = SCORING_CONFIG.ZERO_USE;
-  if (scores[zu.question] === zu.value) level = 0;
-
-  level = Math.max(0, Math.min(SCORING_CONFIG.MAX_LEVEL, level));
-
-  const axes = {};
-  Object.keys(SCORING_CONFIG.AXES).forEach(function (key) {
-    const from = SCORING_CONFIG.AXES[key].from.filter(function (id) { return scores[id] !== undefined; });
-    if (!from.length) { axes[key] = 0; return; }
-    const sum = from.reduce(function (acc, id) { return acc + scores[id]; }, 0);
-    axes[key] = Math.floor(sum / from.length);
-  });
-
-  let group = 'Light';
-  for (let i = 0; i < SCORING_CONFIG.GROUPS.length; i++) {
-    if (level <= SCORING_CONFIG.GROUPS[i].max) { group = SCORING_CONFIG.GROUPS[i].name; break; }
-  }
-  return { level: level, flags: flags, axes: axes, scores: scores, group: group };
-}
-
-/* ---------- разбор промпта ---------- */
-
-function analyzeSandbox(text) {
-  const found = {};
-  SANDBOX_CHECKS.forEach(function (c) {
-    found[c.id] = c.test ? !!c.test(text) : c.re.test(text);
-  });
-  const score = Object.keys(found).filter(function (k) { return found[k]; }).length;
-  return { found: found, score: score };
-}
-
-/* ---------- графика ---------- */
-
-function mountainSVG(level, showMarker) {
-  const W = 620, H = 280, base = 250, step = 11;
-  const ridge = [[0, 250], [70, 218], [140, 176], [205, 132], [258, 88], [310, 40],
-                 [362, 92], [420, 138], [488, 182], [556, 220], [620, 250]];
-  function ridgeY(x) {
-    for (let i = 1; i < ridge.length; i++) {
-      if (x <= ridge[i][0]) {
-        const a = ridge[i - 1], b = ridge[i];
-        const t = (x - a[0]) / (b[0] - a[0]);
-        return a[1] + t * (b[1] - a[1]);
-      }
-    }
-    return base;
-  }
-  let dots = '';
-  for (let x = step / 2; x < W; x += step) {
-    const top = ridgeY(x);
-    for (let y = base; y > top; y -= step) {
-      const depth = (base - y) / (base - 40);
-      const op = (0.5 - depth * 0.32).toFixed(2);
-      const r = (2.3 - depth * 1.0).toFixed(2);
-      dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '" fill="#000" opacity="' + op + '"/>';
-    }
-  }
-  let marker = '';
-  if (showMarker) {
-    const targetY = base - (base - 40) * ((level + 0.6) / 6);
-    let mx = 0, best = 1e9;
-    for (let x = 8; x <= 310; x += 1) {
-      const d = Math.abs(ridgeY(x) - targetY);
-      if (d < best) { best = d; mx = x; }
-    }
-    const my = ridgeY(mx);
-    // Подпись — на белой подложке рядом со склоном, иначе тонет в точках.
-    // Низкие уровни стоят у левого края, там подпись уходит вправо.
-    const left = mx > 150;
-    const ty = my;
-    const tx = left ? mx - 52 : mx + 52;
-    marker =
-      '<text x="' + tx + '" y="' + (ty + 5) + '" text-anchor="' + (left ? 'end' : 'start') +
-      '" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#000"' +
-      ' stroke="#fff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">you are here</text>' +
-      '<line x1="' + (left ? tx + 6 : tx - 6) + '" y1="' + ty + '" x2="' + (left ? mx - 14 : mx + 14) + '" y2="' + ty + '" stroke="#34A948" stroke-width="2"/>' +
-      '<circle cx="' + mx + '" cy="' + my + '" r="11" fill="#fff"/>' +
-      '<circle cx="' + mx + '" cy="' + my + '" r="7" fill="#34A948"/>';
-  }
-  return '<svg class="mountain" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Your level shown as height on a mountain">' +
-    dots + marker + '</svg>';
-}
-
-function radarSVG(axes) {
-  const keys = Object.keys(SCORING_CONFIG.AXES);
-  const cx = 160, cy = 130, R = 88, n = keys.length;
-  function pt(i, v) {
-    const ang = -Math.PI / 2 + i * 2 * Math.PI / n;
-    const r = R * (v / 5);
-    return [cx + r * Math.cos(ang), cy + r * Math.sin(ang)];
-  }
-  let grid = '';
-  for (let ring = 1; ring <= 5; ring++) {
-    const pts = keys.map(function (k, i) { return pt(i, ring).map(function (v) { return v.toFixed(1); }).join(','); }).join(' ');
-    grid += '<polygon points="' + pts + '" fill="none" stroke="#E2E2E2" stroke-width="1"/>';
-  }
-  keys.forEach(function (k, i) {
-    const p = pt(i, 5);
-    grid += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#E2E2E2" stroke-width="1"/>';
-  });
-  const vals = keys.map(function (k, i) {
-    const v = Math.max(0.12, axes[k]); // нулевая ось всё равно видна точкой
-    return pt(i, v).map(function (x) { return x.toFixed(1); }).join(',');
-  }).join(' ');
-  const dots = keys.map(function (k, i) {
-    const p = pt(i, Math.max(0.12, axes[k]));
-    return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.5" fill="#34A948"/>';
-  }).join('');
-  const labels = keys.map(function (k, i) {
-    const p = pt(i, 5);
-    let dx = 0, dy = 0, anchor = 'middle';
-    if (i === 0) dy = -12;
-    if (i === 1) { dx = 8; dy = 5; anchor = 'start'; }
-    if (i === 2) dy = 20;
-    if (i === 3) { dx = -8; dy = 5; anchor = 'end'; }
-    const ax = SCORING_CONFIG.AXES[k];
-    return '<text x="' + (p[0] + dx).toFixed(1) + '" y="' + (p[1] + dy).toFixed(1) + '" text-anchor="' + anchor +
-      '" font-family="Arial, sans-serif" font-size="13" fill="#000">' + esc(ax.short || ax.label) + '</text>';
-  }).join('');
-  return '<svg width="320" height="270" viewBox="0 0 320 270" role="img" aria-label="Your profile across four dimensions">' +
-    grid + '<polygon points="' + vals + '" fill="rgba(52,169,72,.22)" stroke="#000" stroke-width="1.5"/>' + dots + labels + '</svg>';
-}
+function markStarted() { if (!state.startedAt) state.startedAt = Date.now(); }
 
 /* ---------- рендер ---------- */
 
-let screens = [];
-
-function setProgress() {
-  const total = screens.length;
-  const i = state.screen;
-  const show = i > 0 && screens[i].type !== 'result';
-  progressEl.hidden = !show;
-  if (!show) return;
-  const pct = Math.round((i / (total - 1)) * 100);
-  progressFill.style.width = pct + '%';
-  progressLabel.textContent = 'Step ' + i + ' of ' + (total - 1);
+function renderLangBar() {
+  const bar = document.getElementById('langbar');
+  bar.innerHTML =
+    '<button type="button" class="langbtn' + (LANG === 'en' ? ' active' : '') + '" data-lang="en">EN</button>' +
+    '<button type="button" class="langbtn' + (LANG === 'ru' ? ' active' : '') + '" data-lang="ru">RU</button>';
+  Array.prototype.forEach.call(bar.querySelectorAll('.langbtn'), function (b) {
+    b.onclick = function () { LANG = b.dataset.lang; save(); renderAll(); };
+  });
 }
 
-function render() {
-  screens = buildScreens();
-  if (state.screen >= screens.length) state.screen = screens.length - 1;
-  const sc = screens[state.screen];
-  setProgress();
-  window.scrollTo(0, 0);
-  const fn = {
-    intro: renderIntro, team: renderTeam, single: renderSingle, tasks: renderTasks,
-    rank: renderRank, pain: renderPain, sandbox: renderSandbox,
-    expectations: renderExpectations, hackathon: renderHackathon, result: renderResult
-  }[sc.type];
-  fn(sc);
-  save();
+function renderHead() {
+  document.getElementById('head').innerHTML =
+    '<h1>' + esc(S('h1')) + '<span class="dot">.</span></h1>' +
+    '<div class="disclaimer">' + esc(S('disclaimer')) + '</div>' +
+    '<p class="optional">' + esc(S('optional')) + '</p>';
 }
 
-function nav(nextLabel, canNext, onNext) {
-  // Назад слева, вперёд справа — направление движения должно совпадать
-  // с направлением чтения, иначе кнопки читаются задом наперёд.
-  const back = state.screen > 0 ? '<button class="btn-ghost" id="backBtn">Back</button>' : '';
-  const html = '<div class="nav">' + back +
-    '<button class="btn" id="nextBtn"' + (canNext ? '' : ' disabled') + '>' + esc(nextLabel) + '</button></div>';
-  return { html: html, wire: function () {
-    const b = document.getElementById('backBtn');
-    if (b) b.onclick = goBack;
-    document.getElementById('nextBtn').onclick = function () {
-      if (onNext) onNext();
-      state.screen++;
-      render();
-    };
-  } };
-}
+function renderForm() {
+  const form = document.getElementById('form');
 
-function enableNext(on) {
-  const b = document.getElementById('nextBtn');
-  if (b) b.disabled = !on;
-}
-
-function renderIntro() {
-  app.innerHTML =
-    mountainSVG(0, false) +
-    '<h1>How you work with AI today<span class="dot">.</span></h1>' +
-    '<p class="lead">This survey maps where the back-office teams stand with AI, so the workshops are built around the work you actually do. The first question decides how long it runs: if AI is not part of your work, it stops early. At the end you see your own level and how you score across four dimensions.</p>' +
-    '<p class="muted">Takes ' + esc(CONFIG.DURATION_TEXT) + '. There are no right answers, and no scores are shown along the way.</p>' +
-    '<div class="note"><p>This survey runs entirely in your browser. Nothing is sent anywhere automatically. At the end you decide whether to share your result.</p>' +
-    '<p>Please keep internal company data out of the free-text fields: client or counterparty names, deal or position figures, personal data of employees, contents of contracts or internal correspondence. Describing the task in general terms is enough.</p></div>' +
-    '<div class="nav"><button class="btn" id="startBtn">Start</button></div>';
-  document.getElementById('startBtn').onclick = function () {
-    if (!state.startedAt) state.startedAt = Date.now();
-    state.screen++;
-    render();
-  };
-}
-
-function renderTeam() {
-  const opts = CONFIG.TEAMS.map(function (t) {
-    return '<option value="' + esc(t) + '"' + (state.team === t ? ' selected' : '') + '>' + esc(t) + '</option>';
+  // Q1 — Team (select, всегда виден, обязательный).
+  const teamOpts = CONFIG.TEAMS.map(function (t) {
+    return '<option value="' + esc(t.id) + '"' + (state.team === t.id ? ' selected' : '') + '>' + esc(tt(t)) + '</option>';
   }).join('');
-  const n = nav('Next', !!state.team);
-  app.innerHTML =
-    '<h2>Which team are you in<span class="dot">.</span></h2>' +
-    '<p class="muted">This is the only thing we ask about you. Results are grouped by team, and you decide yourself whether to send yours.</p>' +
-    '<div style="margin-top:22px">' +
-    '<label class="field" for="teamSel">Team</label>' +
-    '<select id="teamSel"><option value="">Select your team</option>' + opts + '</select>' +
-    '</div>' + n.html;
-  n.wire();
+  let html =
+    '<section class="q" id="block-q1">' +
+    '<label class="field" for="teamSel">' + esc(S('teamLabel')) +
+    ' <span class="req">' + esc(S('required')) + '</span></label>' +
+    '<select id="teamSel"><option value="">' + esc(S('teamPlaceholder')) + '</option>' + teamOpts + '</select>' +
+    '</section>';
+
+  // Остальные вопросы из конфига.
+  CONFIG.QUESTIONS.forEach(function (q) {
+    html += '<section class="q" id="block-' + q.id + '" data-q="' + q.id + '">' +
+      '<h2>' + esc(tt(q.title)) + (q.required ? ' <span class="req">' + esc(S('required')) + '</span>' : '') + '</h2>' +
+      (q.note ? '<p class="note">' + esc(tt(q.note)) + '</p>' : '') +
+      renderInput(q) +
+      '</section>';
+  });
+
+  form.innerHTML = html;
+  wireForm();
+  applyBranching();
+}
+
+function renderInput(q) {
+  if (q.kind === 'radio' || q.kind === 'checkbox') {
+    const type = q.kind === 'radio' ? 'radio' : 'checkbox';
+    const items = q.options.map(function (o) {
+      const checked = q.kind === 'radio' ? state[q.field] === o.id : state[q.field].indexOf(o.id) >= 0;
+      return '<li><label class="opt' + (checked ? ' checked' : '') + '" data-opt="' + o.id + '">' +
+        '<input type="' + type + '" name="' + q.id + '" value="' + o.id + '"' + (checked ? ' checked' : '') + '>' +
+        '<span>' + esc(tt(o)) + '</span></label></li>';
+    }).join('');
+    let custom = '';
+    if (q.custom) {
+      const cf = q.field + '_custom';
+      custom =
+        '<li><label class="opt" data-opt="__custom__">' +
+        '<input type="checkbox" name="' + q.id + '-customchk"' + (state[cf] ? ' checked' : '') + '>' +
+        '<span>' + esc(S('customLabel')) + '</span></label>' +
+        '<div class="custom-row" id="' + q.id + '-customrow"' + (state[cf] ? '' : ' hidden') + '>' +
+        '<input type="text" id="' + q.id + '-custom" maxlength="200" placeholder="' + esc(S('customPlaceholder')) + '" value="' + esc(state[cf]) + '">' +
+        '</div></li>';
+    }
+    return '<ul class="opts">' + items + custom + '</ul>';
+  }
+  if (q.kind === 'text') {
+    return '<textarea id="' + q.id + '-text" maxlength="' + (q.maxlength || 300) + '" placeholder="' + esc(tt(q.placeholder)) + '">' + esc(state[q.field]) + '</textarea>' +
+      '<div class="counter"><span id="' + q.id + '-count">' + state[q.field].length + '</span> / ' + (q.maxlength || 300) + '</div>';
+  }
+  return '';
+}
+
+function wireForm() {
+  // Team
   const sel = document.getElementById('teamSel');
-  sel.onchange = function () {
-    state.team = sel.value;
-    enableNext(!!state.team);
-    save();
-  };
-}
+  sel.onchange = function () { markStarted(); state.team = sel.value; save(); updateSubmit(); };
 
-function renderSingle(sc) {
-  const question = sc.q;
-  const chosen = state.answers[question.id];
-  const opts = question.options.map(function (o, i) {
-    return '<li><label class="opt' + (chosen === i ? ' checked' : '') + '">' +
-      '<input type="radio" name="' + question.id + '" value="' + i + '"' + (chosen === i ? ' checked' : '') + '>' +
-      '<span>' + esc(o.t) + '</span></label></li>';
-  }).join('');
-  const n = nav('Next', chosen !== undefined && chosen !== null);
-  app.innerHTML =
-    '<h2>' + esc(question.title) + '</h2>' +
-    (question.hint ? '<p class="muted">' + esc(question.hint) + '</p>' : '') +
-    '<ul class="opts">' + opts + '</ul>' + n.html;
-  n.wire();
-  Array.prototype.forEach.call(app.querySelectorAll('input[type=radio]'), function (input) {
-    input.onchange = function () {
-      state.answers[question.id] = parseInt(input.value, 10);
-      Array.prototype.forEach.call(app.querySelectorAll('.opt'), function (l) { l.classList.remove('checked'); });
-      input.closest('.opt').classList.add('checked');
-      enableNext(true);
-      save();
-    };
-  });
-}
-
-function checkboxList(items, selected, name) {
-  return items.map(function (it) {
-    const on = selected.indexOf(it.id) >= 0;
-    return '<li><label class="opt' + (on ? ' checked' : '') + '">' +
-      '<input type="checkbox" name="' + name + '" value="' + it.id + '"' + (on ? ' checked' : '') + '>' +
-      '<span>' + esc(it.t) + '</span></label></li>';
-  }).join('');
-}
-
-function wireCheckboxes(name, onToggle) {
-  Array.prototype.forEach.call(app.querySelectorAll('input[name="' + name + '"]'), function (input) {
-    input.onchange = function () {
-      input.closest('.opt').classList.toggle('checked', input.checked);
-      onToggle(input.value, input.checked, input);
-      save();
-    };
-  });
-}
-
-function renderTasks() {
-  const n = nav('Next', state.tasks.length > 0 || state.tasksNone);
-  app.innerHTML =
-    '<h2>Which of these tasks do you already use AI for<span class="dot">.</span></h2>' +
-    '<p class="muted">Select everything that applies.</p>' +
-    '<ul class="opts">' + checkboxList(TASKS, state.tasks, 'tasks') +
-    '<li><label class="opt' + (state.tasksNone ? ' checked' : '') + '">' +
-    '<input type="checkbox" id="tasksNone"' + (state.tasksNone ? ' checked' : '') + '><span>None of these yet</span></label></li>' +
-    '</ul>' + n.html;
-  n.wire();
-  const none = document.getElementById('tasksNone');
-  wireCheckboxes('tasks', function (id, on) {
-    if (on) { state.tasks.push(id); state.tasksNone = false; none.checked = false; none.closest('.opt').classList.remove('checked'); }
-    else state.tasks = state.tasks.filter(function (x) { return x !== id; });
-    enableNext(state.tasks.length > 0 || state.tasksNone);
-  });
-  none.onchange = function () {
-    state.tasksNone = none.checked;
-    none.closest('.opt').classList.toggle('checked', none.checked);
-    if (none.checked) {
-      state.tasks = [];
-      Array.prototype.forEach.call(app.querySelectorAll('input[name=tasks]'), function (i) {
-        i.checked = false; i.closest('.opt').classList.remove('checked');
+  CONFIG.QUESTIONS.forEach(function (q) {
+    if (q.kind === 'radio') {
+      Array.prototype.forEach.call(document.querySelectorAll('input[name="' + q.id + '"]'), function (input) {
+        input.onchange = function () {
+          markStarted();
+          state[q.field] = input.value;
+          Array.prototype.forEach.call(document.querySelectorAll('#block-' + q.id + ' .opt'), function (l) { l.classList.remove('checked'); });
+          input.closest('.opt').classList.add('checked');
+          save();
+          if (q.id === 'q2') applyBranching();  // частота управляет ветвлением
+          updateSubmit();
+        };
       });
+    } else if (q.kind === 'checkbox') {
+      wireCheckboxGroup(q);
+    } else if (q.kind === 'text') {
+      const ta = document.getElementById(q.id + '-text');
+      ta.oninput = function () {
+        markStarted();
+        state[q.field] = ta.value;
+        document.getElementById(q.id + '-count').textContent = ta.value.length;
+        save();
+      };
     }
-    enableNext(state.tasks.length > 0 || state.tasksNone);
-    save();
-  };
-}
-
-function renderRank() {
-  if (!state.order) {
-    const ids = TASKS.map(function (t) { return t.id; });
-    for (let i = ids.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = ids[i]; ids[i] = ids[j]; ids[j] = tmp;
-    }
-    state.order = ids;
-  }
-  function label(id) { return TASKS.filter(function (t) { return t.id === id; })[0].t; }
-  const items = state.order.map(function (id, i) {
-    return '<li class="' + (i < 3 ? 'top' : '') + '" draggable="true" data-id="' + id + '">' +
-      '<span class="num">' + (i + 1) + '</span>' +
-      '<span class="txt">' + esc(label(id)) + '</span>' +
-      '<span class="rank-btns">' +
-      '<button class="rank-btn" data-dir="-1" aria-label="Move ' + esc(label(id)) + ' up">&#9650;</button>' +
-      '<button class="rank-btn" data-dir="1" aria-label="Move ' + esc(label(id)) + ' down">&#9660;</button>' +
-      '</span></li>';
-  }).join('');
-  const n = nav('Next', true);
-  app.innerHTML =
-    '<h2>What eats most of your time<span class="dot">.</span></h2>' +
-    '<p class="muted">Move your top three time-eaters to the top. Drag them, or use the arrows. Only the first three are recorded.</p>' +
-    '<ul class="rank" id="rankList">' + items + '</ul>' + n.html;
-  n.wire();
-  const list = document.getElementById('rankList');
-  function move(from, to, refocusDir) {
-    if (to < 0 || to >= state.order.length) return;
-    const item = state.order.splice(from, 1)[0];
-    state.order.splice(to, 0, item);
-    save();
-    renderRank();
-    // Кнопка уезжает вместе со строкой — возвращаем на неё фокус, иначе стрелками не пощёлкать.
-    if (refocusDir) {
-      const btn = document.getElementById('rankList').children[to]
-        .querySelector('.rank-btn[data-dir="' + refocusDir + '"]');
-      if (btn) btn.focus();
-    }
-  }
-  Array.prototype.forEach.call(list.querySelectorAll('.rank-btn'), function (b) {
-    b.onclick = function () {
-      const li = b.closest('li');
-      const idx = Array.prototype.indexOf.call(list.children, li);
-      const dir = parseInt(b.dataset.dir, 10);
-      move(idx, idx + dir, b.dataset.dir);
-    };
-  });
-  let dragIdx = null;
-  Array.prototype.forEach.call(list.children, function (li, i) {
-    li.addEventListener('dragstart', function () { dragIdx = i; li.classList.add('dragging'); });
-    li.addEventListener('dragend', function () { li.classList.remove('dragging'); });
-    li.addEventListener('dragover', function (e) { e.preventDefault(); });
-    li.addEventListener('drop', function (e) {
-      e.preventDefault();
-      const to = Array.prototype.indexOf.call(list.children, li);
-      if (dragIdx !== null && dragIdx !== to) move(dragIdx, to);
-      dragIdx = null;
-    });
   });
 }
 
-function renderPain() {
-  const n = nav('Next', true);
-  app.innerHTML =
-    '<h2>What is one task you would happily hand over to AI<span class="dot">.</span></h2>' +
-    '<p class="muted">Optional, and the most useful field in the survey. It feeds directly into what we build at the hackathon. General terms only, no internal data.</p>' +
-    '<textarea id="pain" maxlength="300" style="min-height:110px" placeholder="For example: the weekly expense report takes half a day">' + esc(state.pain) + '</textarea>' +
-    '<div class="counter"><span id="painCount">' + state.pain.length + '</span> / 300</div>' + n.html;
-  n.wire();
-  const ta = document.getElementById('pain');
-  ta.oninput = function () {
-    state.pain = ta.value;
-    document.getElementById('painCount').textContent = ta.value.length;
-    save();
-  };
-}
-
-function renderSandbox() {
-  const n = nav('Next', !!state.sandbox.trim());
-  app.innerHTML =
-    '<h2>Write one request the way you would actually send it<span class="dot">.</span></h2>' +
-    '<p>Imagine you need to turn a long email thread into a short summary for your manager. Write the request you would send to AI.</p>' +
-    '<p class="muted">The only free-form answer here. There is no right way to write it.</p>' +
-    '<textarea id="sbox" maxlength="1000" placeholder="Type your request here">' + esc(state.sandbox) + '</textarea>' +
-    '<div class="counter"><span id="sbCount">' + state.sandbox.length + '</span> / 1000</div>' + n.html;
-  n.wire();
-  const ta = document.getElementById('sbox');
-  ta.oninput = function () {
-    state.sandbox = ta.value;
-    document.getElementById('sbCount').textContent = ta.value.length;
-    enableNext(!!ta.value.trim());
-    save();
-  };
-}
-
-function renderExpectations() {
-  const list = INTERESTS.filter(onPath);
-  function ok() { return state.blockers.length > 0 && state.interests.length > 0; }
-  const n = nav('Next', ok());
-  app.innerHTML =
-    '<h2>Two last things<span class="dot">.</span></h2>' +
-    '<h3 style="margin-top:24px">What stops you using AI more at work?</h3>' +
-    '<p class="muted">Select everything that applies.</p>' +
-    '<ul class="opts">' + checkboxList(BLOCKERS, state.blockers, 'blockers') + '</ul>' +
-    '<div id="blkOtherWrap"' + (state.blockers.indexOf('other') >= 0 ? '' : ' hidden') + ' style="margin-top:14px">' +
-    '<label class="field" for="blkOther">What exactly?</label>' +
-    '<input type="text" id="blkOther" maxlength="140" value="' + esc(state.blockerOther) + '"></div>' +
-    '<h3 style="margin-top:34px">Which of these would you be interested in trying?</h3>' +
-    '<p class="muted">Select everything that applies.</p>' +
-    '<ul class="opts">' + checkboxList(list, state.interests, 'interests') + '</ul>' + n.html;
-  n.wire();
-  const wrap = document.getElementById('blkOtherWrap');
-  const other = document.getElementById('blkOther');
-  other.oninput = function () { state.blockerOther = other.value; save(); };
-  wireCheckboxes('blockers', function (id, on) {
-    if (on) state.blockers.push(id);
-    else state.blockers = state.blockers.filter(function (x) { return x !== id; });
-    wrap.hidden = state.blockers.indexOf('other') < 0;
-    enableNext(ok());
-  });
-  wireCheckboxes('interests', function (id, on) {
-    if (on) state.interests.push(id);
-    else state.interests = state.interests.filter(function (x) { return x !== id; });
-    enableNext(ok());
-  });
-}
-
-function renderHackathon() {
-  const opts = HACKATHON.map(function (o) {
-    return '<li><label class="opt' + (state.hackathon === o.id ? ' checked' : '') + '">' +
-      '<input type="radio" name="hack" value="' + o.id + '"' + (state.hackathon === o.id ? ' checked' : '') + '>' +
-      '<span>' + esc(o.t) + '</span></label></li>';
-  }).join('');
-  const n = nav('See my result', !!state.hackathon);
-  app.innerHTML =
-    '<h2>Would you bring a real task of your own to the hackathon<span class="dot">.</span></h2>' +
-    '<ul class="opts">' + opts + '</ul>' + n.html;
-  n.wire();
-  Array.prototype.forEach.call(app.querySelectorAll('input[name=hack]'), function (input) {
+function wireCheckboxGroup(q) {
+  const noneOpt = q.options.filter(function (o) { return o.resetsOthers; })[0];
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="' + q.id + '"]'), function (input) {
     input.onchange = function () {
-      state.hackathon = input.value;
-      Array.prototype.forEach.call(app.querySelectorAll('.opt'), function (l) { l.classList.remove('checked'); });
-      input.closest('.opt').classList.add('checked');
-      enableNext(true);
+      markStarted();
+      const id = input.value;
+      const isNone = noneOpt && id === noneOpt.id;
+      if (input.checked && isNone) {
+        // «ничего из этого» гасит все остальные галочки и своё поле
+        state[q.field] = [noneOpt.id];
+        if (q.custom) clearCustom(q);
+        syncCheckboxUI(q);
+      } else if (input.checked) {
+        state[q.field] = state[q.field].filter(function (x) { return !noneOpt || x !== noneOpt.id; });
+        if (state[q.field].indexOf(id) < 0) state[q.field].push(id);
+        syncCheckboxUI(q);
+      } else {
+        state[q.field] = state[q.field].filter(function (x) { return x !== id; });
+        input.closest('.opt').classList.remove('checked');
+      }
       save();
     };
   });
+  if (q.custom) wireCustom(q, noneOpt);
 }
 
-function payloadFor(res) {
-  const a = analyzeSandbox(state.sandbox);
-  // В выгрузку идёт только то, что человек на своём маршруте реально видел.
-  // Иначе, сменив ответ на a0 в середине, он утащил бы в строку данные с экранов,
-  // которых у него уже нет, и в декодере это выглядело бы враньём.
-  const types = buildScreens().map(function (s) { return s.type; });
-  function seen(t) { return types.indexOf(t) >= 0; }
-  return {
-    v: 2,
-    ts: new Date().toISOString(),
-    team: state.team,
-    level: res.level,
-    group: res.group,
-    path: currentPath(),   // end | light | full — какую версию анкеты человек увидел
-    axes: res.axes,
-    answers: res.scores,
-    flags: res.flags,
-    tasks_using_ai: seen('tasks') && !state.tasksNone ? state.tasks : [],
-    time_sinks: seen('rank') ? (state.order || []).slice(0, 3) : [],
-    own_pain: seen('pain') ? state.pain.trim() : '',
-    sandbox_prompt: seen('sandbox') ? state.sandbox.trim() : '',
-    sandbox_score: seen('sandbox') ? a.score : null,
-    blockers: seen('expectations') ? state.blockers.map(function (b) { return b === 'other' && state.blockerOther.trim() ? 'other: ' + state.blockerOther.trim() : b; }) : [],
-    interests: seen('expectations') ? state.interests : [],
-    hackathon: seen('hackathon') ? state.hackathon : '',
-    duration_sec: state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : 0
+function wireCustom(q, noneOpt) {
+  const cf = q.field + '_custom';
+  const chk = document.querySelector('input[name="' + q.id + '-customchk"]');
+  const row = document.getElementById(q.id + '-customrow');
+  const txt = document.getElementById(q.id + '-custom');
+  chk.onchange = function () {
+    markStarted();
+    row.hidden = !chk.checked;
+    chk.closest('.opt').classList.toggle('checked', chk.checked);
+    if (chk.checked) {
+      // своё поле снимает «ничего из этого»
+      if (noneOpt) state[q.field] = state[q.field].filter(function (x) { return x !== noneOpt.id; });
+      syncCheckboxUI(q);
+      txt.focus();
+    } else {
+      state[cf] = '';
+      txt.value = '';
+    }
+    save();
   };
+  txt.oninput = function () { markStarted(); state[cf] = txt.value; save(); };
 }
 
-function encodePayload(obj) {
-  const json = JSON.stringify(obj);
-  return CONFIG.PAYLOAD_PREFIX + btoa(unescape(encodeURIComponent(json)));
+function clearCustom(q) {
+  const cf = q.field + '_custom';
+  state[cf] = '';
+  const chk = document.querySelector('input[name="' + q.id + '-customchk"]');
+  const row = document.getElementById(q.id + '-customrow');
+  const txt = document.getElementById(q.id + '-custom');
+  if (chk) { chk.checked = false; chk.closest('.opt').classList.remove('checked'); }
+  if (row) row.hidden = true;
+  if (txt) txt.value = '';
 }
 
-function renderResult() {
-  const res = computeResult();
-  const lvl = LEVELS[res.level];
-  const path = currentPath();
-  const payload = encodePayload(payloadFor(res));
+// Приводит галочки и подсветку в соответствие с state (после reset-логики).
+function syncCheckboxUI(q) {
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="' + q.id + '"]'), function (input) {
+    const on = state[q.field].indexOf(input.value) >= 0;
+    input.checked = on;
+    input.closest('.opt').classList.toggle('checked', on);
+  });
+}
 
-  const legend = Object.keys(SCORING_CONFIG.AXES).map(function (k) {
-    const ax = SCORING_CONFIG.AXES[k];
-    return '<li><b>' + esc(ax.label) + ' &mdash; ' + res.axes[k] + ' of 5</b><span class="muted">' + esc(ax.hint) + '</span></li>';
-  }).join('');
+// Показ/скрытие блоков по ветке + пункт agents в короткой ветке.
+function applyBranching() {
+  const visible = visibleQuestionIds();
+  CONFIG.QUESTIONS.forEach(function (q) {
+    if (q.id === 'q2') return;                 // Q2 всегда виден
+    const block = document.getElementById('block-' + q.id);
+    if (block) block.hidden = visible.indexOf(q.id) < 0;
+  });
+  // agents скрыт в короткой ветке
+  const q6 = document.getElementById('block-q6');
+  if (q6) {
+    qById('q6').options.forEach(function (o) {
+      if (!o.hideInShort) return;
+      const opt = q6.querySelector('.opt[data-opt="' + o.id + '"]');
+      if (opt) opt.parentElement.hidden = isShort();
+    });
+  }
+  updateSubmit();
+}
 
-  // На маршруте «никогда» осей нет — рисовать радар из четырёх нулей незачем.
-  const radar = path === 'end' ? '' :
-    '<h3>Your four dimensions</h3>' +
-    '<div class="radar-row">' + radarSVG(res.axes) + '<ul class="axes-legend">' + legend + '</ul></div>';
+/* ---------- отправка ---------- */
 
-  app.innerHTML =
-    '<div class="result-head">' +
-    '<div class="level-num">Level ' + res.level + ' of 5</div>' +
-    '<h1>' + esc(lvl.name) + '<span class="dot">.</span></h1>' +
-    '<p class="lead">' + esc(lvl.desc) + '</p>' +
-    (path === 'end'
-      ? '<p>That is everything we needed. The rest of the questions assume you have something to compare against, so there is no point asking them.</p>' +
-        '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>'
-      : (res.level <= 1 ? '<p class="muted">This is a normal starting point, and the program is built exactly for it.</p>' : '')) +
+function renderSubmit() {
+  document.getElementById('submit').innerHTML =
+    '<div class="nav">' +
+    '<button class="btn" id="copyBtn" disabled>' + esc(S('copyBtn')) + '</button>' +
+    '<button class="btn-ghost" id="showLine" type="button">' + esc(S('showLine')) + '</button>' +
     '</div>' +
-    mountainSVG(res.level, true) +
-    radar +
-    '<h3>Send your result</h3>' +
-    '<p>' + esc(CONFIG.DELIVERY) + ' The line contains your answers and level, nothing else.</p>' +
-    '<div class="nav"><button class="btn" id="copyResult">Copy my result</button>' +
-    '<button class="btn-ghost" id="showLine">Show the line</button></div>' +
-    '<div id="copyStatus" class="muted" style="margin-top:10px" role="status"></div>' +
-    '<div id="lineWrap" hidden style="margin-top:16px">' +
-    '<p class="muted">Click the box to select everything, then copy it manually.</p>' +
-    '<textarea class="payload" id="payloadBox" readonly>' + esc(payload) + '</textarea></div>' +
-    '<div id="retakeWrap" style="margin-top:44px;border-top:1px solid var(--line);padding-top:22px">' +
-    '<button class="btn-ghost" id="retakeBtn">Take the survey again</button></div>';
+    '<div class="status" id="copyStatus" role="status"></div>' +
+    '<div id="lineWrap" hidden>' +
+    '<p class="status">' + esc(S('selectHint')) + '</p>' +
+    '<textarea class="payload" id="payloadBox" readonly></textarea></div>';
+  document.getElementById('footer').textContent = S('footer');
 
-  const status = document.getElementById('copyStatus');
+  const showLine = document.getElementById('showLine');
   const lineWrap = document.getElementById('lineWrap');
   const box = document.getElementById('payloadBox');
   box.onclick = function () { box.select(); };
-  document.getElementById('showLine').onclick = function () { lineWrap.hidden = false; box.select(); };
-  document.getElementById('copyResult').onclick = function () {
-    copyText(payload, function (ok) {
-      if (ok) {
-        status.textContent = 'Copied. ' + CONFIG.DELIVERY;
-      } else {
-        status.textContent = 'Copying was blocked by the browser. Use the box below.';
-        lineWrap.hidden = false;
-        box.select();
-      }
-    });
+  showLine.onclick = function () {
+    box.value = encodePayload(buildPayload());
+    lineWrap.hidden = false;
+    box.select();
   };
+  document.getElementById('copyBtn').onclick = onCopy;
+  updateSubmit();
+}
 
-  // Сброс в два клика: с одного его слишком легко нажать, не скопировав строку.
-  const retakeWrap = document.getElementById('retakeWrap');
-  document.getElementById('retakeBtn').onclick = function () {
-    retakeWrap.innerHTML =
-      '<p class="muted" id="retakeAsk" role="status">Starting again clears your answers. Copy your result first if you have not sent it.</p>' +
-      '<div class="nav" style="margin-top:0"><button class="btn-ghost" id="retakeNo">Keep my result</button>' +
-      '<button class="btn-ghost" id="retakeYes">Start again</button></div>';
-    // Фокус на безопасном варианте: «Start again» стирает ответы, и Enter,
-    // нажатый по инерции, не должен их сносить.
-    document.getElementById('retakeNo').focus();
-    document.getElementById('retakeYes').onclick = resetSurvey;
-    document.getElementById('retakeNo').onclick = function () { renderResult(); };
+function updateSubmit() {
+  const btn = document.getElementById('copyBtn');
+  if (btn) btn.disabled = !(state.team && state.freq);
+}
+
+function splitCustom(text) {
+  return String(text || '').split(/[,\n;]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+}
+
+function buildPayload() {
+  const visible = visibleQuestionIds();
+  const seen = function (id) { return visible.indexOf(id) >= 0; };
+  const p = {
+    v: 4,
+    variant: 'simple',
+    ts: new Date().toISOString(),
+    team: state.team,
+    freq: state.freq
   };
+  if (seen('q3')) p.trust = state.trust;
+  if (seen('q4')) p.terms = state.terms.slice();
+  if (seen('q5')) { p.uses = state.uses.slice(); p.uses_custom = splitCustom(state.uses_custom); }
+  if (seen('q6')) { p.interests = state.interests.slice(); p.interests_custom = splitCustom(state.interests_custom); }
+  if (seen('q7')) p.own_text = state.own_text.trim();
+  p.duration_sec = state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : 0;
+  return p;
+}
+
+function encodePayload(obj) {
+  return CONFIG.PAYLOAD_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+
+function onCopy() {
+  const payload = encodePayload(buildPayload());
+  const status = document.getElementById('copyStatus');
+  const box = document.getElementById('payloadBox');
+  const lineWrap = document.getElementById('lineWrap');
+  copyText(payload, function (ok) {
+    if (ok) {
+      status.textContent = S('copied') + ' ' + S('copyHint');
+      showThanks();
+    } else {
+      status.textContent = S('copyFail');
+      box.value = payload;
+      lineWrap.hidden = false;
+      box.select();
+    }
+  });
+}
+
+function showThanks() {
+  const t = document.getElementById('thanks');
+  t.innerHTML = '<h2>' + esc(S('thanksTitle')) + '</h2>' +
+    (S('thanksNote') ? '<p>' + esc(S('thanksNote')) + '</p>' : '');
+  t.hidden = false;
+  t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function copyText(text, cb) {
@@ -1064,20 +569,27 @@ function copyText(text, cb) {
 function fallbackCopy(text) {
   try {
     const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
     const ok = document.execCommand('copy');
     document.body.removeChild(ta);
     return ok;
   } catch (e) { return false; }
 }
+
 /* ---------- старт ---------- */
 
+function renderAll() {
+  document.documentElement.lang = LANG;
+  renderLangBar();
+  renderHead();
+  renderForm();
+  renderSubmit();
+  document.getElementById('thanks').hidden = true;
+}
+
 load();
-render();
+renderAll();
 </script>
 </body>
 </html>
